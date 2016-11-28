@@ -10,13 +10,10 @@ import will.game.mario.rf.action.StandardHoldStrat;
  */
 public abstract class SimpleMarioNEATAgent extends MarioNEATAgent {
 
-    private final ActionStratFactory DEFAULT_ACTION_STRAT_FACTORY = () -> new StandardHoldStrat();
-    private ActionStratFactory actionStratFactory = DEFAULT_ACTION_STRAT_FACTORY;
-
     public SimpleMarioNEATAgent() {}
 
     public SimpleMarioNEATAgent(ActionStratFactory factory) {
-        this.actionStratFactory = factory;
+        super(factory);
     }
 
     @Override
@@ -32,13 +29,6 @@ public abstract class SimpleMarioNEATAgent extends MarioNEATAgent {
         MarioInput action = mapNeuronsToAction(networkOutput);
 
         lastInput = action;
-
-        return action;
-    }
-
-    protected MarioInput mapNeuronsToAction(double[] outputNeurons) {
-        ActionStrategy actionStrat = actionStratFactory.create();
-        MarioInput action = actionStrat.makeAction(outputNeurons, lastInput, keysHeld);
 
         return action;
     }

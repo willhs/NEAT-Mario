@@ -3,6 +3,9 @@ package will.game.mario.agent;
 import ch.idsia.agents.AgentOptions;
 import ch.idsia.benchmark.mario.engine.input.MarioInput;
 import ch.idsia.benchmark.mario.engine.input.MarioKey;
+import will.game.mario.rf.action.ActionStratFactory;
+import will.game.mario.rf.action.ActionStrategy;
+import will.game.mario.rf.action.StandardHoldStrat;
 import will.game.mario.rf.environment.EnvEnemyGrid;
 import will.game.mario.rf.environment.GameEnvironment;
 
@@ -19,10 +22,17 @@ public abstract class MarioNEATAgent extends MarioAIBase2 {
     protected Map<MarioKey, Integer> keysHeld = new HashMap<>();
     protected boolean shouldPrint = false;
 
+    private final ActionStratFactory DEFAULT_ACTION_STRAT_FACTORY = () -> new StandardHoldStrat();
+    private ActionStratFactory actionStratFactory = DEFAULT_ACTION_STRAT_FACTORY;
+
     public MarioNEATAgent(){}
 
     public MarioNEATAgent(boolean shouldPrint) {
         this.shouldPrint = shouldPrint;
+    }
+
+    public MarioNEATAgent(ActionStratFactory stratFactory) {
+        this.actionStratFactory = actionStratFactory;
     }
 
     @Override
@@ -66,4 +76,12 @@ public abstract class MarioNEATAgent extends MarioAIBase2 {
     public void shouldPrint(boolean shouldPrint) {
         this.shouldPrint = shouldPrint;
     }
+
+    protected MarioInput mapNeuronsToAction(double[] outputNeurons) {
+        ActionStrategy actionStrat = actionStratFactory.create();
+        MarioInput action = actionStrat.makeAction(outputNeurons, lastInput, keysHeld);
+
+        return action;
+    }
+
 }

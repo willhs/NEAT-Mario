@@ -82,13 +82,13 @@ public class HyperNEATMarioEvolver extends NEATMarioEvolver {
 
             // additive mutations
             phasedSearch.addPhaseOp(0, params.ADD_CONN_PROB, new NEATMutateAddLink());
-            phasedSearch.addPhaseOp(0, params.ADD_NEURON_PROB, new NEATMutateAddNode());
+            phasedSearch.addPhaseOp(0, params.ADD_NEURON_PROB, new NEATMutateAddNeuron());
 
             // subtractive mutations
             phasedSearch.addPhaseOp(1, params.REMOVE_CONN_PROB, new NEATMutateRemoveLink());
             phasedSearch.addPhaseOp(1, params.REMOVE_NEURON_PROB, new NEATMutateRemoveNeuron());
         } else {
-            neat.addOperation(hyperParams.ADD_NEURON_PROB, new NEATMutateAddNode());
+            neat.addOperation(hyperParams.ADD_NEURON_PROB, new NEATMutateAddNeuron());
             neat.addOperation(hyperParams.ADD_CONN_PROB, new NEATMutateAddLink());
             neat.addOperation(hyperParams.REMOVE_CONN_PROB, new NEATMutateRemoveLink());
             neat.addOperation(hyperParams.REMOVE_NEURON_PROB, new NEATMutateRemoveNeuron());

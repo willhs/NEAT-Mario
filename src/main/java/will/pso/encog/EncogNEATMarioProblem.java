@@ -106,7 +106,7 @@ public class EncogNEATMarioProblem extends WillProblem {
         neat.addOperation(features.get(PERTURB_PROP.name()), weightMutation);
 
         // non-phased search
-/*        neat.addOperation(features.get(ADD_NEURON_PROB.name()), new NEATMutateAddNode());
+/*        neat.addOperation(features.get(ADD_NEURON_PROB.name()), new NEATMutateAddNeuron());
         neat.addOperation(features.get(ADD_CONN_PROB.name()), new NEATMutateAddLink());
         neat.addOperation(features.get(REMOVE_CONN_PROB.name()), new NEATMutateRemoveLink());
         neat.addOperation(features.get(REMOVE_NEURON_PROB.name()), new NEATMutateRemoveNeuron());*/
@@ -115,7 +115,7 @@ public class EncogNEATMarioProblem extends WillProblem {
         PhasedSearch phasedSearch = new PhasedSearch((int)(double)features.get(PHASE_LENGTH.name()));
         neat.addStrategy(phasedSearch);
         phasedSearch.addPhaseOp(0, features.get(ADD_CONN_PROB.name()), new NEATMutateAddLink());
-        phasedSearch.addPhaseOp(0, features.get(ADD_NEURON_PROB.name()), new NEATMutateAddNode());
+        phasedSearch.addPhaseOp(0, features.get(ADD_NEURON_PROB.name()), new NEATMutateAddNeuron());
         phasedSearch.addPhaseOp(1, features.get(REMOVE_CONN_PROB.name()), new NEATMutateRemoveLink());
         phasedSearch.addPhaseOp(1, features.get(REMOVE_NEURON_PROB.name()), new NEATMutateRemoveNeuron());
 

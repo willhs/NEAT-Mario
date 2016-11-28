@@ -109,7 +109,7 @@ public class EncogHyperMarioProblem extends EncogNEATMarioProblem {
         neat.addOperation(features.get(CROSSOVER_PROB.name()), new NEATCrossover());
 
         // mutations
-        neat.addOperation(features.get(ADD_NEURON_PROB.name()), new NEATMutateAddNode());
+        neat.addOperation(features.get(ADD_NEURON_PROB.name()), new NEATMutateAddNeuron());
         neat.addOperation(features.get(ADD_CONN_PROB.name()), new NEATMutateAddLink());
 //        neat.addOperation(features.get(REMOVE_NEURON_PROB.name(), new NEATRemoveNode())); // not implemented yet
         neat.addOperation(features.get(REMOVE_CONN_PROB.name()), new NEATMutateRemoveLink());

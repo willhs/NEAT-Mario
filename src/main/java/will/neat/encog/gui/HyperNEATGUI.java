@@ -20,7 +20,7 @@ import org.encog.engine.network.activation.ActivationBipolarSteepenedSigmoid;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.train.basic.TrainEA;
 import org.encog.neural.hyperneat.HyperNEATCODEC;
-import org.encog.neural.hyperneat.HyperNEATGenome;
+import org.encog.neural.hyperneat.HyperSingleNEATGenome;
 import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATPopulation;
 import will.game.mario.agent.encog.EncogAgent;
@@ -233,14 +233,14 @@ public class HyperNEATGUI extends Application {
         double averageCPPNLinks = population.getSpecies().stream()
                 .map(s -> s.getMembers())
                 .flatMap(genomes -> genomes.stream())
-                .mapToInt(genome -> ((HyperNEATGenome)genome).getLinksChromosome().size())
+                .mapToInt(genome -> ((HyperSingleNEATGenome)genome).getLinksChromosome().size())
                 .average()
                 .getAsDouble();
 
         double averageCPPNNodes = population.getSpecies().stream()
                 .map(s -> s.getMembers())
                 .flatMap(genomes -> genomes.stream())
-                .mapToInt(genome -> ((HyperNEATGenome)genome).getNeuronsChromosome().size())
+                .mapToInt(genome -> ((HyperSingleNEATGenome)genome).getNeuronsChromosome().size())
                 .average()
                 .getAsDouble();
 

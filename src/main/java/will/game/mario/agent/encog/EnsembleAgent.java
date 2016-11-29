@@ -37,6 +37,15 @@ public class EnsembleAgent extends MarioNEATEnsembleAgent {
 
     @Override
     protected MarioInput interpretNetworkOutputs(double[][] networkOutputs) {
+        return average(networkOutputs);
+    }
+
+    /**
+     * Finds an average of network outputs and uses them for StandardHoldActionStrat
+     * @param networkOutputs
+     * @return
+     */
+    protected MarioInput average(double[][] networkOutputs) {
         double[] totals = new double[networkOutputs[0].length];
 
         for (int nn = 0; nn < networkOutputs.length; nn++) {

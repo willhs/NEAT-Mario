@@ -8,6 +8,7 @@ import org.encog.neural.neat.NEATNetwork;
 import will.game.mario.fitness.AbstractMarioFitnessFunction;
 import will.game.mario.params.HyperNEATParameters;
 import will.game.mario.params.HyperNEATParametersPSO;
+import will.game.mario.params.NEATEnsembleParams;
 import will.game.mario.params.NEATParameters;
 import will.game.mario.rf.action.SharedHoldStrat;
 import will.game.mario.rf.action.StandardActionStrat;
@@ -76,12 +77,12 @@ public class MarioAIExperiment {
         this.experimentName = name;
     }
 
-    public void testing() throws IOException{
+    public void testing() {
         String level = levels[1];
 
         StringBuilder sb = new StringBuilder();
 
-        NEATParameters neatPhasedParams = new NEATParameters();
+        NEATParameters neatPhasedParams = new NEATEnsembleParams();
         neatPhasedParams.PHASED_SEARCH = true;
 
         HyperNEATParameters hyperPhasedParams = new HyperNEATParametersPSO();

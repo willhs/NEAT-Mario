@@ -8,6 +8,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import will.game.mario.fitness.AbstractMarioFitnessFunction;
+import will.game.mario.params.NEATEnsembleParams;
 import will.neat.encog.gui.HyperNEATGUI;
 import will.game.mario.params.NEATParameters;
 import will.game.mario.rf.action.StandardHoldStrat;
@@ -21,8 +22,6 @@ public class NEATEvolverGUI extends Application {
     // io
     private static Logger logger = Logger.getLogger(HyperNEATGUI.class
             .getSimpleName());
-
-    private NEATParameters params = new NEATParameters();
 
     public NEATEvolverGUI() {
     }
@@ -43,8 +42,10 @@ public class NEATEvolverGUI extends Application {
         );
         root.setLeft(checkbox);
 
+        NEATParameters params = new NEATEnsembleParams();
+
         // define neat
-        NEATMarioEvolver evolver = new NEATMarioEvolver(params, () -> new StandardHoldStrat());
+        NEATMarioEvolver evolver = new NEATMarioEnsembleEvolver(params, () -> new StandardHoldStrat());
         String simOptions = AbstractMarioFitnessFunction.DEFAULT_SIM_OPTIONS
                 .replace(AbstractMarioFitnessFunction.LEVEL,
                         FastOpts.LEVEL_08_FLY_SPIKY

@@ -13,6 +13,7 @@ import will.game.mario.agent.encog.EnsembleAgent;
 import will.game.mario.fitness.EncogMarioFitnessFunction;
 import will.game.mario.fitness.EnsembleMarioFF;
 import will.game.mario.params.HyperNEATParameters;
+import will.game.mario.params.NEATEnsembleParams;
 import will.game.mario.params.NEATParameters;
 import will.game.mario.rf.action.ActionStratFactory;
 import will.neat.encog.MutatePerturbOrResetLinkWeight;
@@ -27,8 +28,8 @@ import will.neat.encog.ensemble.mutation.*;
  * Created by hardwiwill on 29/11/16.
  */
 public class NEATMarioEnsembleEvolver extends NEATMarioEvolver {
-    public NEATMarioEnsembleEvolver(NEATParameters params, ActionStratFactory actionStratFactory, StringBuilder output, String name) {
-        super(params, actionStratFactory, output, name);
+    public NEATMarioEnsembleEvolver(NEATParameters params, ActionStratFactory actionStratFactory, StringBuilder output, String experimentName) {
+        super(params, actionStratFactory, output, experimentName);
     }
 
     public NEATMarioEnsembleEvolver(NEATParameters params, ActionStratFactory actionStratFactory) {
@@ -37,7 +38,13 @@ public class NEATMarioEnsembleEvolver extends NEATMarioEvolver {
 
     @Override
     protected TrainEA setupNEAT(NEATParameters params, String marioOptions, AgentFactory agentFactory) {
-        NEATEnsemblePopulation population = new NEATEnsemblePopulation(params.NUM_INPUTS, params.NUM_OUTPUTS, params.POP_SIZE, 2);
+        int ensembleSize = 4; // default value
+        if (params instanceof NEATEnsembleParams) {
+            ensembleSize = ((NEATEnsembleParams)params).ENSEMBLE_SIZE;
+        }
+
+        NEATEnsemblePopulation population = new NEATEnsemblePopulation(params.NUM_INPUTS, params.NUM_OUTPUTS,
+                params.POP_SIZE, ensembleSize);
         population.setActivationCycles(params.ACTIVATION_CYCLES);
         population.setInitialConnectionDensity(params.INIT_CONNECTION_DENSITY);
         population.setWeightRange(params.NN_WEIGHT_RANGE);
@@ -51,6 +58,8 @@ public class NEATMarioEnsembleEvolver extends NEATMarioEvolver {
         speciation.setCompatibilityThreshold(params.INIT_COMPAT_THRESHOLD);
         speciation.setMaxNumberOfSpecies(params.MAX_SPECIES);
         speciation.setNumGensAllowedNoImprovement(params.SPECIES_DROPOFF);
+//        speciation.setConstDisjoint(0.5);
+//        speciation.setConstExcess(0.5);
 
         final TrainEA neat = new TrainEA(population, fitnessFunction);
         neat.setSpeciation(speciation);
@@ -94,7 +103,6 @@ public class NEATMarioEnsembleEvolver extends NEATMarioEvolver {
             neat.addOperation(params.REMOVE_NEURON_PROB, new EnsembleRemoveNeuron());
         }
         neat.getOperators().finalizeStructure();
-
 
         neat.setThreadCount(1);
 

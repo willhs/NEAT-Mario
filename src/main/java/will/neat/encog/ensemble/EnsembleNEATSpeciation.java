@@ -37,13 +37,28 @@ public class EnsembleNEATSpeciation extends ThresholdSpeciation {
     @Override
     public double getCompatibilityScore(final Genome gen1,
                                         final Genome gen2) {
+
+        final NEATEnsembleGenome genome1 = (NEATEnsembleGenome)gen1;
+        final NEATEnsembleGenome genome2 = (NEATEnsembleGenome)gen2;
+
+        // find compatibility between each pair of singular ANNs and return the average
+        double scoreSum = 0;
+        for (int i = 0; i < genome1.getAnns().length; i++) {
+            SingleNEATGenome g1 = genome1.getAnns()[i];
+            SingleNEATGenome g2 = genome2.getAnns()[i];
+
+            scoreSum += getCompatibilityScore0(g1, g2);
+        }
+
+        double average = scoreSum / genome1.getAnns().length;
+        return average;
+    }
+
+    private double getCompatibilityScore0(SingleNEATGenome genome1, SingleNEATGenome genome2) {
         double numDisjoint = 0;
         double numExcess = 0;
         double numMatched = 0;
         double weightDifference = 0;
-
-        final NEATEnsembleGenome genome1 = (NEATEnsembleGenome)gen1;
-        final NEATEnsembleGenome genome2 = (NEATEnsembleGenome)gen2;
 
         final int genome1Size = genome1.getLinksChromosome().size();
         final int genome2Size = genome2.getLinksChromosome().size();

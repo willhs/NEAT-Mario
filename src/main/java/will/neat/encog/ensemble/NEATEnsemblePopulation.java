@@ -8,6 +8,7 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.codec.GeneticCODEC;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.neat.NEATNetwork;

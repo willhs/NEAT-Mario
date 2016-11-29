@@ -1,14 +1,11 @@
-package will.neat.encog;
+package will.game.mario.fitness;
 
-import ch.idsia.benchmark.mario.MarioSimulator;
-import javafx.concurrent.Task;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
 import org.encog.neural.neat.NEATNetwork;
 import will.game.mario.agent.MarioNEATAgent;
 import will.game.mario.agent.encog.AgentFactory;
 import will.game.mario.agent.encog.EncogAgent;
-import will.neat.AbstractMarioFitnessFunction;
 
 import java.util.Arrays;
 import java.util.logging.Logger;
@@ -21,15 +18,13 @@ public class EncogMarioFitnessFunction extends AbstractMarioFitnessFunction<NEAT
     private static Logger logger = Logger.getLogger(EncogMarioFitnessFunction.class
             .getSimpleName());
 
-    private static double total = 0;
-    private static int runs = 0;
+    private double total = 0;
+    private int runs = 0;
 
     private final AgentFactory DEFAULT_AGENT_SUPPLIER = network -> new EncogAgent(network);
     private AgentFactory agentFactory = DEFAULT_AGENT_SUPPLIER;
 
-    public EncogMarioFitnessFunction() {
-        super();
-    }
+    public EncogMarioFitnessFunction(){}
 
     public EncogMarioFitnessFunction(String marioOptions, boolean headless, AgentFactory agentFactory) {
         super(marioOptions, headless);

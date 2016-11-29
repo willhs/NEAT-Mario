@@ -7,12 +7,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import will.neat.AbstractMarioFitnessFunction;
+import will.game.mario.fitness.AbstractMarioFitnessFunction;
 import will.neat.encog.gui.HyperNEATGUI;
 import will.game.mario.params.NEATParameters;
 import will.game.mario.rf.action.StandardHoldStrat;
 
-import java.io.IOException;
 import java.util.logging.Logger;
 
 /**

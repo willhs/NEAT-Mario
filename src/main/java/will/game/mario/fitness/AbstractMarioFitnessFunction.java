@@ -1,4 +1,4 @@
-package will.neat;
+package will.game.mario.fitness;
 
 import ch.idsia.benchmark.mario.MarioSimulator;
 import ch.idsia.benchmark.mario.options.FastOpts;
@@ -47,7 +47,7 @@ public abstract class AbstractMarioFitnessFunction<N> {
     // public static for lazy reasons
     public static boolean headless = false;
 
-    protected static double bestFitness = 0;
+    protected double bestFitness = 0;
 
     public AbstractMarioFitnessFunction(String simOptions, boolean headless) {
         this.simOptions = simOptions;
@@ -130,7 +130,6 @@ public abstract class AbstractMarioFitnessFunction<N> {
                 + " " + MarioOptions.IntOption.LEVEL_RANDOM_SEED.getParam() + " " + seed;
     }
 
-    protected void logRun(Logger logger, double fitness, N n) {
-    }
+    protected void logRun(Logger logger, double fitness, N n) {}
 
 }

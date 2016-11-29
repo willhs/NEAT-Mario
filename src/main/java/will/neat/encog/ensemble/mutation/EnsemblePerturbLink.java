@@ -2,6 +2,7 @@ package will.neat.encog.ensemble.mutation;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.neural.neat.NEATPopulation;
+import org.encog.neural.neat.training.AbstractNEATPopulation;
 import org.encog.neural.neat.training.SingleNEATGenome;
 import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.opp.NEATMutateWeights;
@@ -46,7 +47,7 @@ public class EnsemblePerturbLink extends NEATMutateWeights {
             return;
         }
 
-        final double weightRange = ((NEATPopulation)getOwner().getPopulation()).getWeightRange();
+        final double weightRange = ((AbstractNEATPopulation)getOwner().getPopulation()).getWeightRange();
         final List<NEATLinkGene> list = this.getLinkSelection().selectLinks(rnd, targetAnn);
         for (final NEATLinkGene gene : list) {
             this.getWeightMutation().mutateWeight(rnd, gene, weightRange);

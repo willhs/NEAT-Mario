@@ -3,7 +3,6 @@ package will.neat.encog.ensemble.mutation;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.neural.neat.NEATNeuronType;
-import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.NEATNeuronGene;
 import org.encog.neural.neat.training.SingleNEATGenome;
 import org.encog.neural.neat.training.opp.NEATMutateAddLink;

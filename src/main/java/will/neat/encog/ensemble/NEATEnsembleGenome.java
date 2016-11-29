@@ -2,6 +2,7 @@ package will.neat.encog.ensemble;
 
 import org.encog.ml.ea.genome.BasicGenome;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.population.Population;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.SingleNEATGenome;
 import org.encog.neural.neat.training.NEATLinkGene;
@@ -27,7 +28,7 @@ public class NEATEnsembleGenome extends NEATGenome {
     public NEATEnsembleGenome(SingleNEATGenome template, int ensembleSize) {
         this.anns = new ArrayList<>();
         for (int e = 0; e < ensembleSize; e++) {
-            anns.add(template);
+            anns.add(new SingleNEATGenome(template));
         }
 
         this.inputCount = template.getInputCount();
@@ -39,8 +40,13 @@ public class NEATEnsembleGenome extends NEATGenome {
                 .map(ann -> new SingleNEATGenome(ann))
                 .collect(Collectors.toList());
 
-        this.inputCount = other.getInputCount();
-        this.outputCount = other.getOutputCount();
+        this.networkDepth = other.networkDepth;
+        this.setPopulation(other.getPopulation());
+        setScore(other.getScore());
+        setAdjustedScore(other.getAdjustedScore());
+        this.inputCount = other.inputCount;
+        this.outputCount = other.outputCount;
+        this.setSpecies(other.getSpecies());
     }
 
     /**
@@ -213,5 +219,11 @@ public class NEATEnsembleGenome extends NEATGenome {
 
     public int getNumAnns() {
         return anns.size();
+    }
+
+    @Override
+    public void setPopulation(Population p) {
+        super.setPopulation(p);
+        anns.forEach(ann -> ann.setPopulation(p));
     }
 }

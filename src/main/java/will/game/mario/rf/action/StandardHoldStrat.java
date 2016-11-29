@@ -41,6 +41,7 @@ public class StandardHoldStrat extends AbstractHoldActionStrat {
                 } else continue;
             }
 
+            // if key over press threshold, press key for period of time
             if (input > pressThreshold) {
                 int holdFor = (int) Algorithms.scaleToRange(
                         input, pressThreshold, 1, MIN_HOLD_FOR, MAX_HOLD_FOR

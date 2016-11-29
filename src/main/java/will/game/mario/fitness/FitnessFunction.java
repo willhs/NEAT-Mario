@@ -1,4 +1,4 @@
-package will.neat;
+package will.game.mario.fitness;
 
 /**
  * Created by hardwiwill on 21/07/16.

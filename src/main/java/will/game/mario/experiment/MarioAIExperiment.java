@@ -5,7 +5,7 @@ import ch.idsia.benchmark.mario.options.FastOpts;
 import org.encog.ml.ea.train.basic.TrainEA;
 import org.encog.neural.neat.NEATLink;
 import org.encog.neural.neat.NEATNetwork;
-import will.neat.AbstractMarioFitnessFunction;
+import will.game.mario.fitness.AbstractMarioFitnessFunction;
 import will.game.mario.params.HyperNEATParameters;
 import will.game.mario.params.HyperNEATParametersPSO;
 import will.game.mario.params.NEATParameters;
@@ -22,7 +22,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 
-import static will.neat.AbstractMarioFitnessFunction.DIFFICULTY;
+import static will.game.mario.fitness.AbstractMarioFitnessFunction.DIFFICULTY;
 
 /**
  * Created by Will on 8/10/2016.
@@ -55,7 +55,7 @@ public class MarioAIExperiment {
     public static final String HYPERNEAT_PHASED = "hyperneat-phased";
     private String experimentName;
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
 
         String arg = null;
         if (args.length < 1) {
@@ -67,24 +67,47 @@ public class MarioAIExperiment {
         }
 
         MarioAIExperiment ex = new MarioAIExperiment(arg);
-        ex.run();
+//        ex.run();
 
-        // testing
-/*        Tile[][] tiles = {
-                {Tile.NOTHING, Tile.SOMETHING, Tile.NOTHING},
-                {Tile.NOTHING, Tile.NOTHING, Tile.NOTHING},
-                {Tile.NOTHING, Tile.NOTHING, Tile.SOMETHING}
-        };
-
-        double[] binaryArray = envGridToBinaryArray(tiles);
-        System.out.println(Arrays.toString(binaryArray));*/
+        ex.testing();
     }
 
     public MarioAIExperiment(String name) {
         this.experimentName = name;
     }
 
-    public void run() throws IOException{
+    public void testing() throws IOException{
+        String level = levels[1];
+
+        StringBuilder sb = new StringBuilder();
+
+        NEATParameters neatPhasedParams = new NEATParameters();
+        neatPhasedParams.PHASED_SEARCH = true;
+
+        HyperNEATParameters hyperPhasedParams = new HyperNEATParametersPSO();
+        hyperPhasedParams.PHASED_SEARCH = true;
+
+        NEATParameters neatShareActionParams = new NEATParameters();
+        neatShareActionParams.NUM_OUTPUTS = 5;
+
+        NEATMarioEvolver evolver = null;
+
+        evolver = new NEATMarioEnsembleEvolver(neatParams,
+                () -> new StandardHoldStrat());
+
+//        evolver = new NEATMarioEnsembleEvolver(neatParams,
+//                () -> new StandardHoldStrat());
+
+//        evolver = new HyperNEATMarioEvolver(hyperPhasedParams,
+//                () -> new StandardHoldStrat(), sb, "hyper");
+
+        evolver.setSimOptions(level);
+        evolver.run();
+
+//        testOnLevels(evolver);
+    }
+
+    private void runHonoursExperiments() throws IOException {
         // for each of the experiments, run all level benchmarks
         // 1. run each type of action strat
         //      a. every frame
@@ -107,61 +130,26 @@ public class MarioAIExperiment {
         NEATParameters neatShareActionParams = new NEATParameters();
         neatShareActionParams.NUM_OUTPUTS = 5;
 
-        NEATMarioEvolver evolver = null;
-
-        if (experimentName.equals(NEAT_EACH_FRAME)) {
-            evolver = new NEATMarioEvolver(neatParams,
-                () -> new StandardActionStrat(), sb, experimentName);
-        } else if (experimentName.equals(NEAT_STANDARD_HOLD)) {
-            evolver = new NEATMarioEvolver(neatParams,
-                () -> new StandardHoldStrat(), sb, experimentName);
-        } else if (experimentName.equals(NEAT_SHARED_HOLD)) {
-            evolver = new NEATMarioEvolver(neatShareActionParams,
-                () -> new SharedHoldStrat(), sb, experimentName);
-        } else if (experimentName.equals(NEAT_PHASED)) {
-            evolver = new NEATMarioEvolver(neatPhasedParams,
-                    () -> new StandardHoldStrat(), sb, experimentName);
-        } else if (experimentName.equals(HYPERNEAT)) {
-            evolver = new HyperNEATMarioEvolver(hyperParams,
-                    () -> new StandardHoldStrat(), sb, experimentName);
-        } else if (experimentName.equals(HYPERNEAT_PHASED)) {
-            evolver = new HyperNEATMarioEvolver(hyperPhasedParams,
-                    () -> new StandardHoldStrat(), sb, experimentName);
-        }
-
-//        NEATMarioEvolver neatFrames = = new NEATMarioEvolver(neatParams,
-//                () -> new StandardActionStrat(), sb, "neat-frames");
-//        NEATMarioEvolver neatStandardHold = new NEATMarioEvolver(neatParams,
-//                () -> new StandardHoldStrat(), sb, "neat-standard-hold");
-//        NEATMarioEvolver neatSharedHold = new NEATMarioEvolver(neatShareActionParams,
-//                () -> new SharedHoldStrat(), sb, "neat-shared-hold");
-//        NEATMarioEvolver neatPhased = new NEATMarioEvolver(neatPhasedParams,
-//                () -> new StandardHoldStrat(), sb, "neat-phased");
-//        NEATMarioEvolver hyperneat = new HyperNEATMarioEvolver(hyperParams,
-//                () -> new StandardHoldStrat(), sb, "hyperneat");
-//        NEATMarioEvolver hyperneatPhased = new HyperNEATMarioEvolver(hyperPhasedParams,
-//                () -> new StandardHoldStrat(), sb, "hyperneat-phased");
+        NEATMarioEvolver neatFrames = new NEATMarioEvolver(neatParams,
+                () -> new StandardActionStrat(), sb, "neat-frames");
+        NEATMarioEvolver neatStandardHold = new NEATMarioEvolver(neatParams,
+                () -> new StandardHoldStrat(), sb, "neat-standard-hold");
+        NEATMarioEvolver neatSharedHold = new NEATMarioEvolver(neatShareActionParams,
+                () -> new SharedHoldStrat(), sb, "neat-shared-hold");
+        NEATMarioEvolver neatPhased = new NEATMarioEvolver(neatPhasedParams,
+                () -> new StandardHoldStrat(), sb, "neat-phased");
+        NEATMarioEvolver hyperneat = new HyperNEATMarioEvolver(hyperParams,
+                () -> new StandardHoldStrat(), sb, "hyperneat");
+        NEATMarioEvolver hyperneatPhased = new HyperNEATMarioEvolver(hyperPhasedParams,
+                () -> new StandardHoldStrat(), sb, "hyperneat-phased");
 
         // run all experiments without dependencies
-//        testOnLevels(neatStandard);
-//        testOnLevels(neatStandardHold);
-//        testOnLevels(neatSharedHold);
-//        testOnLevels(neatPhased);
-//        testOnLevels(hyperneat);
-//        testOnLevels(hyperneatPhased);
-
-//        String level = levels[1];
-
-//        evolver = new NEATMarioEvolver(neatPhasedParams,
-//                () -> new StandardHoldStrat());
-
-//        evolver = new HyperNEATMarioEvolver(hyperPhasedParams,
-//                () -> new StandardHoldStrat(), sb, "hyper");
-
-//        evolver.setSimOptions(level);
-//        evolver.run();
-
-        testOnLevels(evolver);
+        testOnLevels(neatFrames);
+        testOnLevels(neatStandardHold);
+        testOnLevels(neatSharedHold);
+        testOnLevels(neatPhased);
+        testOnLevels(hyperneat);
+        testOnLevels(hyperneatPhased);
 
         if (writeFile) {
             // make sure output dir exists
@@ -186,6 +174,48 @@ public class MarioAIExperiment {
                 e.printStackTrace();
             }
         }
+
+    }
+
+    private void run() {
+        // initialise parameters
+        NEATParameters neatPhasedParams = new NEATParameters();
+        neatPhasedParams.PHASED_SEARCH = true;
+
+        HyperNEATParameters hyperPhasedParams = new HyperNEATParametersPSO();
+        hyperPhasedParams.PHASED_SEARCH = true;
+
+        NEATParameters neatShareActionParams = new NEATParameters();
+        neatShareActionParams.NUM_OUTPUTS = 5;
+
+        StringBuilder sb = new StringBuilder();
+
+        NEATMarioEvolver evolver = null;
+
+        if (experimentName.equals(NEAT_EACH_FRAME)) {
+            evolver = new NEATMarioEvolver(neatParams,
+                    () -> new StandardActionStrat(), sb, experimentName);
+        } else if (experimentName.equals(NEAT_STANDARD_HOLD)) {
+            evolver = new NEATMarioEvolver(neatParams,
+                    () -> new StandardHoldStrat(), sb, experimentName);
+        } else if (experimentName.equals(NEAT_SHARED_HOLD)) {
+            evolver = new NEATMarioEvolver(neatShareActionParams,
+                    () -> new SharedHoldStrat(), sb, experimentName);
+        } else if (experimentName.equals(NEAT_PHASED)) {
+            evolver = new NEATMarioEvolver(neatPhasedParams,
+                    () -> new StandardHoldStrat(), sb, experimentName);
+        } else if (experimentName.equals(HYPERNEAT)) {
+            evolver = new HyperNEATMarioEvolver(hyperParams,
+                    () -> new StandardHoldStrat(), sb, experimentName);
+        } else if (experimentName.equals(HYPERNEAT_PHASED)) {
+            evolver = new HyperNEATMarioEvolver(hyperPhasedParams,
+                    () -> new StandardHoldStrat(), sb, experimentName);
+        }
+
+        String level = levels[1];
+
+        evolver.setSimOptions(level);
+        evolver.run();
     }
 
     private void testOnLevels(NEATMarioEvolver evolver) throws IOException {

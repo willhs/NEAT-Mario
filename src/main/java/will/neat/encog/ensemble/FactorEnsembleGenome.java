@@ -35,6 +35,6 @@ public class FactorEnsembleGenome implements GenomeFactory {
     }
 
     public Genome factor(Random rnd, NEATEnsemblePopulation pop, int inputCount, int outputCount, double connectionDensity) {
-        return null;
+        return new NEATEnsembleGenome(new SingleNEATGenome(rnd, pop, inputCount, outputCount, connectionDensity), ensembleSize);
     }
 }

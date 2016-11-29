@@ -24,8 +24,8 @@ import org.encog.neural.hyperneat.HyperSingleNEATGenome;
 import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATPopulation;
 import will.game.mario.agent.encog.EncogAgent;
-import will.neat.AbstractMarioFitnessFunction;
-import will.neat.encog.EncogMarioFitnessFunction;
+import will.game.mario.fitness.AbstractMarioFitnessFunction;
+import will.game.mario.fitness.EncogMarioFitnessFunction;
 import will.game.mario.experiment.HyperNEATOldEvolver;
 import will.game.mario.params.HyperNEATParameters;
 

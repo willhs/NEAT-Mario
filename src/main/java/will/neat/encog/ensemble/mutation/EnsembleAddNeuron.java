@@ -5,12 +5,10 @@ import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.neat.NEATPopulation;
-import org.encog.neural.neat.training.NEATInnovation;
-import org.encog.neural.neat.training.NEATLinkGene;
-import org.encog.neural.neat.training.NEATNeuronGene;
-import org.encog.neural.neat.training.SingleNEATGenome;
+import org.encog.neural.neat.training.*;
 import org.encog.neural.neat.training.opp.NEATMutateAddNeuron;
 import will.neat.encog.ensemble.NEATEnsembleGenome;
+import will.neat.encog.ensemble.NEATEnsemblePopulation;
 
 import java.util.Random;
 
@@ -38,13 +36,13 @@ public class EnsembleAddNeuron extends NEATMutateAddNeuron {
             return;
         }
 
-        final NEATPopulation pop = ((NEATPopulation) ensemble.getPopulation());
+        final AbstractNEATPopulation pop = ((AbstractNEATPopulation) ensemble.getPopulation());
 
         // the link to split
         NEATLinkGene splitLink = null;
 
-        final int sizeBias = ((SingleNEATGenome)parents[0]).getInputCount()
-                + ((SingleNEATGenome)parents[0]).getOutputCount() + 10;
+        final int sizeBias = ((NEATEnsembleGenome)parents[0]).getInputCount()
+                + ((NEATEnsembleGenome)parents[0]).getOutputCount() + 10;
 
         // if there are not at least
         int upperLimit;
@@ -81,11 +79,11 @@ public class EnsembleAddNeuron extends NEATMutateAddNeuron {
         final long from = splitLink.getFromNeuronID();
         final long to = splitLink.getToNeuronID();
 
-        final NEATInnovation innovation = ((NEATPopulation)getOwner().getPopulation()).getInnovations()
+        final NEATInnovation innovation = ((NEATEnsemblePopulation)getOwner().getPopulation()).getInnovations()
                 .findInnovationSplit(from, to);
 
         // add the splitting neuron
-        final ActivationFunction af = ((NEATPopulation)getOwner().getPopulation())
+        final ActivationFunction af = ((NEATEnsemblePopulation)getOwner().getPopulation())
                 .getActivationFunctions().pick(new Random());
 
         targetAnn.getNeuronsChromosome().add(

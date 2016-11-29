@@ -11,7 +11,7 @@ import org.encog.neural.neat.training.opp.*;
 import org.encog.neural.neat.training.opp.links.SelectFixed;
 import org.encog.neural.neat.training.opp.links.SelectProportion;
 import org.encog.neural.neat.training.species.OriginalNEATSpeciation;
-import will.neat.encog.EncogMarioFitnessFunction;
+import will.game.mario.fitness.EncogMarioFitnessFunction;
 import will.neat.encog.MutatePerturbOrResetLinkWeight;
 import will.neat.encog.substrate.MultiHiddenLayerSubstrate;
 import will.game.mario.params.HyperNEATParameters;

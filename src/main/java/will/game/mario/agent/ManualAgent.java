@@ -9,8 +9,8 @@ import ch.idsia.benchmark.mario.engine.sprites.Mario;
 import ch.idsia.benchmark.mario.options.FastOpts;
 import ch.idsia.tools.EvaluationInfo;
 
-import static will.neat.AbstractMarioFitnessFunction.DEFAULT_SIM_OPTIONS;
-import static will.neat.AbstractMarioFitnessFunction.LEVEL;
+import static will.game.mario.fitness.AbstractMarioFitnessFunction.DEFAULT_SIM_OPTIONS;
+import static will.game.mario.fitness.AbstractMarioFitnessFunction.LEVEL;
 
 
 /**

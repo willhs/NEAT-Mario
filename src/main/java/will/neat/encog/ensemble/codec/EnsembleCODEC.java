@@ -1,4 +1,4 @@
-package will.neat.encog.ensemble;
+package will.neat.encog.ensemble.codec;
 
 import org.encog.ml.MLMethod;
 import org.encog.ml.ea.codec.GeneticCODEC;
@@ -6,6 +6,8 @@ import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.genetic.GeneticError;
 import org.encog.neural.neat.NEATCODEC;
 import org.encog.neural.neat.NEATNetwork;
+import will.neat.encog.ensemble.NEATNetworkEnsemble;
+import will.neat.encog.ensemble.genome.NEATEnsembleGenome;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,11 +18,12 @@ import java.util.List;
  */
 public class EnsembleCODEC implements GeneticCODEC {
 
-    private NEATCODEC neatCODEC = new NEATCODEC();
 
     @Override
     public MLMethod decode(Genome genome) {
         NEATEnsembleGenome ensembleGenome = (NEATEnsembleGenome) genome;
+
+        NEATCODEC neatCODEC = new NEATCODEC();
 
         List<NEATNetwork> anns = new ArrayList<>();
 

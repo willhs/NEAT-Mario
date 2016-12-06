@@ -1,5 +1,6 @@
-package will.game.mario.agent.encog;
+package will.game.mario.agent.factory;
 
+import will.game.mario.agent.encog.EnsembleAgent;
 import will.neat.encog.ensemble.NEATNetworkEnsemble;
 
 /**

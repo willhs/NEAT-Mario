@@ -2,12 +2,9 @@ package will.game.mario.fitness;
 
 import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
-import org.encog.neural.neat.NEATNetwork;
 import will.game.mario.agent.MarioNEATAgent;
-import will.game.mario.agent.encog.AgentFactory;
-import will.game.mario.agent.encog.EncogAgent;
 import will.game.mario.agent.encog.EnsembleAgent;
-import will.game.mario.agent.encog.EnsembleAgentFactory;
+import will.game.mario.agent.factory.EnsembleAgentFactory;
 import will.neat.encog.ensemble.NEATNetworkEnsemble;
 
 import java.util.logging.Logger;
@@ -67,5 +64,9 @@ public class EnsembleMarioFF extends AbstractMarioFitnessFunction<NEATNetworkEns
                 ;
         if (should) logger.info("playing run with score: " + fitness);
         return should;
+    }
+
+    protected EnsembleAgentFactory getAgentFactory() {
+        return agentFactory;
     }
 }

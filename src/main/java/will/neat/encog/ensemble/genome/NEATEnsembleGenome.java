@@ -1,6 +1,5 @@
-package will.neat.encog.ensemble;
+package will.neat.encog.ensemble.genome;
 
-import org.encog.ml.ea.genome.BasicGenome;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.population.Population;
 import org.encog.neural.neat.training.NEATGenome;
@@ -13,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * Created by hardwiwill on 28/11/16.
@@ -179,6 +177,10 @@ public class NEATEnsembleGenome extends NEATGenome {
 
     public SingleNEATGenome[] getAnns() {
         return anns.toArray(new SingleNEATGenome[anns.size()]);
+    }
+
+    public SingleNEATGenome[] getComponents() {
+        return getAnns();
     }
 
     /**

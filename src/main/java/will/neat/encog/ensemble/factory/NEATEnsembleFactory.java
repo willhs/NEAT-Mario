@@ -1,9 +1,10 @@
-package will.neat.encog.ensemble;
+package will.neat.encog.ensemble.factory;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
 import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.NEATNeuronGene;
+import will.neat.encog.ensemble.NEATEnsemblePopulation;
 
 import java.util.List;
 import java.util.Random;

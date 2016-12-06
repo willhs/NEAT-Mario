@@ -4,7 +4,7 @@ import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
 import org.encog.neural.neat.NEATNetwork;
 import will.game.mario.agent.MarioNEATAgent;
-import will.game.mario.agent.encog.AgentFactory;
+import will.game.mario.agent.factory.AgentFactory;
 import will.game.mario.agent.encog.EncogAgent;
 
 import java.util.Arrays;

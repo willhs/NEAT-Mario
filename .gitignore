@@ -17,3 +17,7 @@
 .idea/libraries
 
 # others
+/encog-java-core
+/lib
+/target
+/out

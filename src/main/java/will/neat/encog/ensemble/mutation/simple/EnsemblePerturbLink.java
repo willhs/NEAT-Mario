@@ -1,14 +1,13 @@
-package will.neat.encog.ensemble.mutation;
+package will.neat.encog.ensemble.mutation.simple;
 
 import org.encog.ml.ea.genome.Genome;
-import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.AbstractNEATPopulation;
 import org.encog.neural.neat.training.SingleNEATGenome;
 import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.opp.NEATMutateWeights;
 import org.encog.neural.neat.training.opp.links.MutateLinkWeight;
 import org.encog.neural.neat.training.opp.links.SelectLinks;
-import will.neat.encog.ensemble.NEATEnsembleGenome;
+import will.neat.encog.ensemble.genome.NEATEnsembleGenome;
 
 import java.util.List;
 import java.util.Random;
@@ -42,15 +41,6 @@ public class EnsemblePerturbLink extends NEATMutateWeights {
         int whichAnn = rnd.nextInt(ensemble.getNumAnns());
         SingleNEATGenome targetAnn = ensemble.getAnns()[whichAnn];
 
-        // cannot perform operation if there are no links
-        if (targetAnn.getLinksChromosome().isEmpty()) {
-            return;
-        }
-
-        final double weightRange = ((AbstractNEATPopulation)getOwner().getPopulation()).getWeightRange();
-        final List<NEATLinkGene> list = this.getLinkSelection().selectLinks(rnd, targetAnn);
-        for (final NEATLinkGene gene : list) {
-            this.getWeightMutation().mutateWeight(rnd, gene, weightRange);
-        }
+        performOperation(targetAnn, rnd);
     }
 }

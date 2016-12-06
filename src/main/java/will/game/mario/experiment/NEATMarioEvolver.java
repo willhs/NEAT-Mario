@@ -9,25 +9,19 @@ import org.encog.neural.neat.NEATCODEC;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.AbstractNEATPopulation;
 import org.encog.neural.neat.training.NEATGenome;
-import org.encog.neural.neat.training.SingleNEATGenome;
 import org.encog.neural.neat.training.opp.*;
 import org.encog.neural.neat.training.opp.links.SelectFixed;
 import org.encog.neural.neat.training.opp.links.SelectProportion;
 import org.encog.neural.neat.training.species.OriginalNEATSpeciation;
-import will.game.mario.agent.encog.AgentFactory;
+import will.game.mario.agent.factory.AgentFactory;
 import will.game.mario.agent.encog.EncogAgent;
 import will.game.mario.fitness.EncogMarioFitnessFunction;
 import will.neat.encog.MutatePerturbOrResetLinkWeight;
 import will.neat.encog.PhasedSearch;
-import will.neat.encog.ensemble.EnsembleCODEC;
-import will.neat.encog.ensemble.EnsembleNEATSpeciation;
-import will.neat.encog.ensemble.mutation.*;
 import will.neat.encog.substrate.MultiHiddenLayerSubstrate;
 import will.game.mario.params.HyperNEATParameters;
 import will.game.mario.params.NEATParameters;
 import will.game.mario.rf.action.ActionStratFactory;
-
-import java.io.IOException;
 
 /**
  * Created by Will on 8/10/2016.
@@ -37,7 +31,8 @@ public class NEATMarioEvolver {
     private String simOptions;
     private NEATParameters params;
     private ActionStratFactory stratFactory;
-    private String name;
+    private String name = "NEAT";
+
     private StringBuilder output;
     private boolean printOutput;
 
@@ -146,7 +141,6 @@ public class NEATMarioEvolver {
     private void logIteration(TrainEA neat, StringBuilder output) {
         AbstractNEATPopulation population = (AbstractNEATPopulation) neat.getPopulation();
         double bestFitness = population.getBestGenome().getScore();
-//            double bestFitnessGen = population.determineBestSpecies().getLeader().getScore();
 
         int numSpecies = population.getSpecies().size();
 

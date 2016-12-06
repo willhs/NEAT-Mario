@@ -1,4 +1,4 @@
-package will.game.mario.agent.encog;
+package will.game.mario.agent.factory;
 
 import org.encog.neural.neat.NEATNetwork;
 import will.game.mario.agent.MarioNEATAgent;

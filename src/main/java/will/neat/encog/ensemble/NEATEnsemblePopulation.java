@@ -8,7 +8,7 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.ea.codec.GeneticCODEC;
 import org.encog.ml.ea.genome.Genome;
-import org.encog.ml.ea.population.Population;
+import org.encog.ml.ea.genome.GenomeFactory;
 import org.encog.ml.ea.species.BasicSpecies;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.neat.NEATNetwork;
@@ -17,6 +17,7 @@ import org.encog.neural.neat.training.NEATInnovationList;
 import org.encog.util.identity.BasicGenerateID;
 import org.encog.util.identity.GenerateID;
 import org.encog.util.obj.ChooseObject;
+import will.neat.encog.ensemble.factory.FactorEnsembleGenome;
 
 import java.util.Random;
 
@@ -206,11 +207,12 @@ public class NEATEnsemblePopulation extends AbstractNEATPopulation {
      * @param populationSize The population size.
      */
     public NEATEnsemblePopulation(final int inputCount, final int outputCount,
-                                  final int populationSize, int ensembleSize) {
+                                  final int populationSize, int ensembleSize, GenomeFactory genomeFactory) {
         super(populationSize, null);
         this.inputCount = inputCount;
         this.outputCount = outputCount;
         this.ensembleSize = ensembleSize;
+        this.setGenomeFactory(genomeFactory);
 
         setNEATActivationFunction(new ActivationSteepenedSigmoid());
 
@@ -354,9 +356,6 @@ public class NEATEnsemblePopulation extends AbstractNEATPopulation {
      * Create an initial random population.
      */
     public void reset() {
-        this.codec = new EnsembleCODEC();
-        setGenomeFactory(new FactorEnsembleGenome(ensembleSize));
-
         // create the new genomes
         getSpecies().clear();
 

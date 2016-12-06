@@ -1,12 +1,11 @@
-package will.neat.encog.ensemble;
+package will.neat.encog.ensemble.factory;
 
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.genome.GenomeFactory;
+import org.encog.neural.neat.training.AbstractNEATPopulation;
 import org.encog.neural.neat.training.SingleNEATGenome;
-import org.encog.neural.neat.training.NEATLinkGene;
-import org.encog.neural.neat.training.NEATNeuronGene;
+import will.neat.encog.ensemble.genome.NEATEnsembleGenome;
 
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -30,11 +29,11 @@ public class FactorEnsembleGenome implements GenomeFactory {
         return new NEATEnsembleGenome((NEATEnsembleGenome)other);
     }
 
-    public Genome factor(List<NEATNeuronGene> neurons, List<NEATLinkGene> links, int inputCount, int outputCount) {
-        return new NEATEnsembleGenome(new SingleNEATGenome(neurons, links, inputCount, outputCount), ensembleSize);
+    public Genome factor(Random rnd, AbstractNEATPopulation pop, int inputCount, int outputCount, double connectionDensity) {
+        return new NEATEnsembleGenome(new SingleNEATGenome(rnd, pop, inputCount, outputCount, connectionDensity), ensembleSize);
     }
 
-    public Genome factor(Random rnd, NEATEnsemblePopulation pop, int inputCount, int outputCount, double connectionDensity) {
-        return new NEATEnsembleGenome(new SingleNEATGenome(rnd, pop, inputCount, outputCount, connectionDensity), ensembleSize);
+    public int getEnsembleSize() {
+        return ensembleSize;
     }
 }

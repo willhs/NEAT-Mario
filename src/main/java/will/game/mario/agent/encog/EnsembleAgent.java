@@ -62,4 +62,7 @@ public class EnsembleAgent extends MarioNEATEnsembleAgent {
         return mapNeuronsToAction(averages);
     }
 
+    protected NEATNetworkEnsemble getEnsemble() {
+        return ensemble;
+    }
 }

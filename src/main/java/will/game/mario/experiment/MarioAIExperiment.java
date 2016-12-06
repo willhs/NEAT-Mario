@@ -13,6 +13,7 @@ import will.game.mario.params.NEATParameters;
 import will.game.mario.rf.action.SharedHoldStrat;
 import will.game.mario.rf.action.StandardActionStrat;
 import will.game.mario.rf.action.StandardHoldStrat;
+import will.neat.encog.ensemble.EA;
 
 import java.awt.*;
 import java.io.File;
@@ -43,7 +44,7 @@ public class MarioAIExperiment {
             DEFAULT_SIM_OPTIONS.replace(DEFAULT_LEVEL, FastOpts.LEVEL_07_SPIKY),
             DEFAULT_SIM_OPTIONS.replace(DEFAULT_LEVEL, FastOpts.LEVEL_08_FLY_SPIKY)
     };
-    private static String outputDirName = "neat-phased-output/";
+    private static String outputDirName = "neat-output/";
     private static String outputFilename = "results.csv";
 
     private boolean writeFile = true;
@@ -108,49 +109,26 @@ public class MarioAIExperiment {
 //        testOnLevels(evolver);
     }
 
-    private void runHonoursExperiments() throws IOException {
-        // for each of the experiments, run all level benchmarks
-        // 1. run each type of action strat
-        //      a. every frame
-        //      b. standard hold
-        //      c. timed action toggle
-        // 2. phased search
-        // 3. hyperneat
-        //      a. normal
-        //      b. with feature selection from phased search neat
-
+    private void runMultiExperiment() throws IOException {
         // init string output
         StringBuilder sb = new StringBuilder();
 
-        NEATParameters neatPhasedParams = new NEATParameters();
-        neatPhasedParams.PHASED_SEARCH = true;
+        NEATEnsembleParams ensembleParams = new NEATEnsembleParams();
 
-        HyperNEATParameters hyperPhasedParams = new HyperNEATParametersPSO();
-        hyperPhasedParams.PHASED_SEARCH = true;
-
-        NEATParameters neatShareActionParams = new NEATParameters();
-        neatShareActionParams.NUM_OUTPUTS = 5;
-
-        NEATMarioEvolver neatFrames = new NEATMarioEvolver(neatParams,
-                () -> new StandardActionStrat(), sb, "neat-frames");
-        NEATMarioEvolver neatStandardHold = new NEATMarioEvolver(neatParams,
-                () -> new StandardHoldStrat(), sb, "neat-standard-hold");
-        NEATMarioEvolver neatSharedHold = new NEATMarioEvolver(neatShareActionParams,
+        NEATMarioEvolver neatStandard = new NEATMarioEvolver(neatParams,
+                () -> new StandardHoldStrat(), sb, "neat");
+        NEATMarioEnsembleEvolver ensembleShared = new NEATMarioEnsembleEvolver(ensembleParams,
+                () -> new StandardHoldStrat(), sb, "ensemble-shared");
+        EnsembleMasterMarioEvolver ensembleMaster = new EnsembleMasterMarioEvolver(ensembleParams,
                 () -> new SharedHoldStrat(), sb, "neat-shared-hold");
-        NEATMarioEvolver neatPhased = new NEATMarioEvolver(neatPhasedParams,
+        MultiPopNEATMarioEvolver ensembleMulti = new MultiPopNEATMarioEvolver(ensembleParams,
                 () -> new StandardHoldStrat(), sb, "neat-phased");
-        NEATMarioEvolver hyperneat = new HyperNEATMarioEvolver(hyperParams,
-                () -> new StandardHoldStrat(), sb, "hyperneat");
-        NEATMarioEvolver hyperneatPhased = new HyperNEATMarioEvolver(hyperPhasedParams,
-                () -> new StandardHoldStrat(), sb, "hyperneat-phased");
 
         // run all experiments without dependencies
-        testOnLevels(neatFrames);
-        testOnLevels(neatStandardHold);
-        testOnLevels(neatSharedHold);
-        testOnLevels(neatPhased);
-        testOnLevels(hyperneat);
-        testOnLevels(hyperneatPhased);
+        testOnLevels(neatStandard);
+        testOnLevels(ensembleShared);
+        testOnLevels(ensembleMaster);
+        testOnLevels(ensembleMulti);
 
         if (writeFile) {
             // make sure output dir exists
@@ -178,7 +156,7 @@ public class MarioAIExperiment {
 
     }
 
-    private void run() {
+    private void runSingleExperiment() {
         // initialise parameters
         NEATParameters neatPhasedParams = new NEATParameters();
         neatPhasedParams.PHASED_SEARCH = true;
@@ -231,19 +209,17 @@ public class MarioAIExperiment {
         }
     }
 
-    private void runHyperNEATES() {
-/*        // use features from phased neat for hyperneat
-        for (int i = 0; i < phasedResults.length; i++) {
-            TrainEA result = phasedResults[i];
-            String level = levels[i];
-            NEATCODEC codec = new NEATCODEC();
-            NEATNetwork network = (NEATNetwork) codec.decode(result.getBestGenome());
-            Point[] features = extractFeatures(network);
+    // uuuhh copy for multipop stuff
+    private void testOnLevels(MultiPopNEATMarioEvolver evolver) throws IOException {
+        String basicName = evolver.getName();
+        EA[] results = new EA[levels.length];
+        for (int l = 0; l < levels.length; l++) {
+            String level = levels[l];
 
-            hyperneatFS.setSimOptions(level);
-            hyperneatFS.setInputs(features);
-            hyperneatFS.run();
-        }*/
+            evolver.setSimOptions(level);
+            evolver.setName(basicName + "-" + l);
+            results[l] = evolver.run();
+        }
     }
 
     private Point[] extractFeatures(NEATNetwork network) {

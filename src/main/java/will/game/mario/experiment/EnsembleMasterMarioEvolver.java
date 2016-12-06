@@ -35,6 +35,10 @@ public class EnsembleMasterMarioEvolver extends NEATMarioEnsembleEvolver {
         super(params, actionStratFactory);
     }
 
+    public EnsembleMasterMarioEvolver(NEATEnsembleParams ensembleParams, ActionStratFactory actionStratFactory, StringBuilder sb, String s) {
+        super(ensembleParams, actionStratFactory, sb, s);
+    }
+
     @Override
     protected TrainEA setupNEAT(NEATParameters params, String marioOptions, AgentFactory agentFactory) {
         int ensembleSize = 4; // default value

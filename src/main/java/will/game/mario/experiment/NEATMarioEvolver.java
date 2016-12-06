@@ -165,15 +165,9 @@ public class NEATMarioEvolver {
                 .getAsDouble();
 
         StringBuilder sb = new StringBuilder();
-        sb.append(name + ",");
-        sb.append(neat.getIteration() + ",");
-        sb.append(bestFitness + ",");
-        sb.append(averageLinks + ",");
-        sb.append(bestLinks + ",");
-        sb.append(averageNeurons + ",");
-        sb.append(bestNeurons + ",");
-        sb.append(numSpecies + ",");
-        sb.append("\n");
+        sb.append(String.format("%s, %d, %3.0f, %3.0f, %3.0f, %3.0f, %3.0f, %d%n",
+                name, neat.getIteration(), bestFitness, averageLinks, bestLinks, averageNeurons, bestNeurons, numSpecies));
+
         if (output != null) {
             output.append(sb.toString());
         }

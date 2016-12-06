@@ -27,11 +27,12 @@ import java.util.Arrays;
  */
 public class MultiPopNEATMarioEvolver {
 
+    private StringBuilder output;
     private String simOptions;
     private NEATParameters params;
     private ActionStratFactory stratFactory;
     private String name;
-    private boolean printOutput = false;
+    private boolean printOutput = true;
 
     public MultiPopNEATMarioEvolver(NEATParameters params, String simOptions, ActionStratFactory actionStratFactory,
                             String name) {
@@ -39,13 +40,19 @@ public class MultiPopNEATMarioEvolver {
         this.simOptions = simOptions;
         this.stratFactory = actionStratFactory;
         this.name = name;
-        this.printOutput = true;
+    }
+
+    public MultiPopNEATMarioEvolver(NEATParameters params, ActionStratFactory actionStratFactory,
+                                    StringBuilder output, String name) {
+        this.params = params;
+        this.stratFactory = actionStratFactory;
+        this.name = name;
+        this.output = output;
     }
 
     public MultiPopNEATMarioEvolver(NEATParameters params, ActionStratFactory actionStratFactory) {
         this.params = params;
         this.stratFactory = actionStratFactory;
-        this.printOutput = true;
     }
 
     public EA run() {
@@ -148,8 +155,6 @@ public class MultiPopNEATMarioEvolver {
                 .toArray(NEATPopulation[]::new);
 
         StringBuilder sb = new StringBuilder();
-        sb.append(name + ",");
-        sb.append(neat.getIteration() + ",");
 
         int masterBestFitness = (int)masterPop.getBestGenome().getScore();
         double masterAveLinks = getAverageLinks(masterPop);
@@ -159,14 +164,9 @@ public class MultiPopNEATMarioEvolver {
         double masterBestNeurons = ((NEATGenome)masterPop.getBestGenome())
                 .getNeuronsChromosome().size();
 
-        sb.append("{");
-        sb.append(masterBestFitness + ",");
-        sb.append(masterAveLinks + ",");
-        sb.append(masterAveNeurons + ",");
-        sb.append(masterBestLinks + ",");
-        sb.append(masterBestNeurons + ",");
-        sb.append(masterPop.getSpecies().size());
-        sb.append("} ");
+        sb.append(String.format("%s, %d, { %d, %3.0f, %3.0f, %3.0f, %3.0f, %d }, ",
+                name, neat.getIteration(), masterBestFitness, masterAveLinks, masterBestLinks,
+                masterAveNeurons, masterBestNeurons, masterPop.getSpecies().size()));
 
         for (NEATPopulation modulePop: modulePops) {
             int moduleBestFitness = (int)modulePop.getBestGenome().getScore();
@@ -177,18 +177,17 @@ public class MultiPopNEATMarioEvolver {
             double moduleBestNeurons = ((NEATGenome)modulePop.getBestGenome())
                     .getNeuronsChromosome().size();
 
-            sb.append("[");
-            sb.append(moduleBestFitness + ",");
-            sb.append(moduleAveLinks + ",");
-            sb.append(moduleAveNeurons + ",");
-            sb.append(moduleBestLinks + ",");
-            sb.append(moduleBestNeurons + ",");
-            sb.append(modulePop.getSpecies().size());
-            sb.append("] ");
+            sb.append(String.format("[ %d, %3.0f, %3.0f, %3.0f, %3.0f, %d ], ",
+                    moduleBestFitness, moduleAveLinks, moduleBestLinks, moduleAveNeurons,
+                    moduleBestNeurons, modulePop.getSpecies().size()));
         }
 
         if (printOutput) {
             System.out.println(sb.toString());
+        }
+
+        if (this.output != null) {
+            this.output.append(sb.toString());
         }
     }
 
@@ -211,4 +210,11 @@ public class MultiPopNEATMarioEvolver {
     }
 
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

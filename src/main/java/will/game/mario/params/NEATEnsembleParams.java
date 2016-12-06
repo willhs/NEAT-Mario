@@ -9,6 +9,6 @@ public class NEATEnsembleParams extends NEATParameters {
     public NEATEnsembleParams() {
         INIT_COMPAT_THRESHOLD = 10;
 
-        PHASED_SEARCH = true;
+        PHASED_SEARCH = false;
     }
 }

@@ -16,6 +16,9 @@ import will.game.mario.params.NEATParameters;
 import will.game.mario.rf.action.ActionStratFactory;
 import will.neat.encog.MutatePerturbOrResetLinkWeight;
 import will.neat.encog.PhasedSearch;
+import will.neat.encog.ensemble.EnsembleDiversityFF;
+import will.neat.encog.ensemble.GenotypeFF;
+import will.neat.encog.ensemble.TrainEAGenotypeFF;
 import will.neat.encog.ensemble.codec.EnsembleCODEC;
 import will.neat.encog.ensemble.factory.FactorEnsembleGenome;
 import will.neat.encog.ensemble.factory.FactorEnsembleMaster;
@@ -30,6 +33,10 @@ public class NEATMarioEnsembleEvolver extends NEATMarioEvolver {
 
     public NEATMarioEnsembleEvolver(NEATParameters params, ActionStratFactory actionStratFactory) {
         super(params, actionStratFactory);
+    }
+
+    public NEATMarioEnsembleEvolver(NEATParameters params, ActionStratFactory actionStratFactory, StringBuilder sb, String name) {
+        super(params, actionStratFactory, sb, name);
     }
 
     @Override
@@ -52,12 +59,14 @@ public class NEATMarioEnsembleEvolver extends NEATMarioEvolver {
         CalculateScore fitnessFunction = new EnsembleMarioFF(marioOptions, true,
                 ensemble -> new EnsembleAgent(ensemble));
 
+        EnsembleDiversityFF genotypeFF = new EnsembleDiversityFF((EnsembleMarioFF) fitnessFunction);
+
         EnsembleNEATSpeciation speciation = new EnsembleNEATSpeciation();
         speciation.setCompatibilityThreshold(params.INIT_COMPAT_THRESHOLD);
         speciation.setMaxNumberOfSpecies(params.MAX_SPECIES);
         speciation.setNumGensAllowedNoImprovement(params.SPECIES_DROPOFF);
 
-        final TrainEA neat = new TrainEA(population, fitnessFunction);
+        final TrainEAGenotypeFF neat = new TrainEAGenotypeFF(population, genotypeFF);
         neat.setSpeciation(speciation);
         neat.setSelection(new TruncationSelection(neat, params.SELECTION_PROP));
         neat.setEliteRate(params.ELITE_RATE);

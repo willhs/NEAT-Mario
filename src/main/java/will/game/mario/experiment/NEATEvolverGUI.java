@@ -46,7 +46,7 @@ public class NEATEvolverGUI extends Application {
         params.POP_SIZE = 200;
 
         // define neat
-        MultiPopNEATMarioEvolver evolver = new MultiPopNEATMarioEvolver(params, () -> new StandardHoldStrat());
+        NEATMarioEvolver evolver = new NEATMarioEnsembleEvolver(params, () -> new StandardHoldStrat());
         String simOptions = AbstractMarioFitnessFunction.DEFAULT_SIM_OPTIONS
                 .replace(AbstractMarioFitnessFunction.LEVEL,
                         FastOpts.LEVEL_08_FLY_SPIKY

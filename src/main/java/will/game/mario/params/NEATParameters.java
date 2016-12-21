@@ -9,7 +9,7 @@ import org.encog.engine.network.activation.ActivationFunction;
 public class NEATParameters {
 
     //
-    public int POP_SIZE = 100;
+    public int POP_SIZE = 200;
     public int MAX_GENERATIONS = 1000;
 
     // nn

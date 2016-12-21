@@ -66,7 +66,8 @@ public class NEATMarioEnsembleEvolver extends NEATMarioEvolver {
         speciation.setMaxNumberOfSpecies(params.MAX_SPECIES);
         speciation.setNumGensAllowedNoImprovement(params.SPECIES_DROPOFF);
 
-        final TrainEAGenotypeFF neat = new TrainEAGenotypeFF(population, genotypeFF);
+//        final TrainEAGenotypeFF neat = new TrainEAGenotypeFF(population, genotypeFF);
+        final TrainEA neat = new TrainEA(population, fitnessFunction);
         neat.setSpeciation(speciation);
         neat.setSelection(new TruncationSelection(neat, params.SELECTION_PROP));
         neat.setEliteRate(params.ELITE_RATE);

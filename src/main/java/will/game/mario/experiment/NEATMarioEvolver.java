@@ -165,7 +165,7 @@ public class NEATMarioEvolver {
                 .getAsDouble();
 
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%s, %d, %3.0f, %3.0f, %3.0f, %3.0f, %3.0f, %d%n",
+        sb.append(String.format("%s,%d,%.0f,%.0f,%.0f,%.0f,%.0f,%d%n",
                 name, neat.getIteration(), bestFitness, averageLinks, bestLinks, averageNeurons, bestNeurons, numSpecies));
 
         if (output != null) {

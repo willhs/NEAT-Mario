@@ -17,16 +17,15 @@ public class ExperimentPostProcessing {
 
     private static final int LEVELS = 5;
 
-    private static String EXPERIMENT_NAME = "neat-standard-hold";
-    private static String EXPERIMENT_DIR = EXPERIMENT_NAME + "/30/";
-    private static String ROOT_RESULTS_DIR = "results/grid-results/";
-    private static String ROOT_EXPERIMENTS_DIR = "Best/" + EXPERIMENT_DIR;
-    private static String ROOT_OUTPUT_DIR = "results/grid-results/averaged/";
+    private static String ROOT_RESULTS_DIR = "grid-results/";
+    private static String EXPERIMENT_NAME = "ensemble-master";
+
+    private static String ROOT_OUTPUT_DIR = ROOT_RESULTS_DIR + "averaged/";
     private static String OUTPUT_FILENAME = EXPERIMENT_NAME + ".csv";
 
     public static void main(String[] args) throws Exception {
         Tuple[] averagedResults = averageResults(
-                Arrays.stream(new File(ROOT_RESULTS_DIR + ROOT_EXPERIMENTS_DIR).listFiles())
+                Arrays.stream(new File(ROOT_RESULTS_DIR + EXPERIMENT_NAME).listFiles())
                     .filter(file -> !file.isDirectory())
                     .toArray(s -> new File[s])
         );
@@ -91,6 +90,24 @@ public class ExperimentPostProcessing {
 
         return averaged;
     }
+
+/*    private String[] separateFiles(File file) {
+        Scanner s = null;
+        try {
+            s = new Scanner(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        s.nextLine();
+
+        List<String> experiments = new ArrayList<>();
+        while (s.hasNext()) {
+            StringBuilder sb = new StringBuilder();
+            do {
+
+            } while ()
+        }
+    }*/
 
     private static class Tuple {
         public int gen;

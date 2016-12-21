@@ -164,7 +164,7 @@ public class MultiPopNEATMarioEvolver {
         double masterBestNeurons = ((NEATGenome)masterPop.getBestGenome())
                 .getNeuronsChromosome().size();
 
-        sb.append(String.format("%s, %d, { %d, %3.0f, %3.0f, %3.0f, %3.0f, %d }, ",
+        sb.append(String.format("%s,%d, { %d,%.0f,%.0f,%.0f,%.0f,%d }, ",
                 name, neat.getIteration(), masterBestFitness, masterAveLinks, masterBestLinks,
                 masterAveNeurons, masterBestNeurons, masterPop.getSpecies().size()));
 
@@ -177,13 +177,15 @@ public class MultiPopNEATMarioEvolver {
             double moduleBestNeurons = ((NEATGenome)modulePop.getBestGenome())
                     .getNeuronsChromosome().size();
 
-            sb.append(String.format("[ %d, %3.0f, %3.0f, %3.0f, %3.0f, %d ], ",
+            sb.append(String.format("[ %d,%.0f,%.0f,%.0f,%.0f,%d ], ",
                     moduleBestFitness, moduleAveLinks, moduleBestLinks, moduleAveNeurons,
                     moduleBestNeurons, modulePop.getSpecies().size()));
         }
 
+        sb.append("\n");
+
         if (printOutput) {
-            System.out.println(sb.toString());
+            System.out.print(sb.toString());
         }
 
         if (this.output != null) {

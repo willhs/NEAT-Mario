@@ -9,13 +9,13 @@ import org.encog.engine.network.activation.ActivationFunction;
 public class NEATParameters {
 
     //
-    public int POP_SIZE = 100;
+    public int POP_SIZE = 200;
     public int MAX_GENERATIONS = 1000;
 
     // nn
     public int ACTIVATION_CYCLES = 7; // was 5
     public double NN_WEIGHT_RANGE = 1.0;
-    public double INIT_CONNECTION_DENSITY = 0.0; // 1 for fully connected!
+    public double INIT_CONNECTION_DENSITY = 0.1; // 1 for fully connected!
     public ActivationFunction NN_ACTIVATION_FUNCTION = new ActivationClippedLinear();
     public int NUM_INPUTS = 169;
     public int NUM_OUTPUTS = 4;

@@ -7,7 +7,7 @@ public class NEATEnsembleParams extends NEATParameters {
     public int ENSEMBLE_SIZE = 3;
 
     public NEATEnsembleParams() {
-        INIT_COMPAT_THRESHOLD = 10;
+        INIT_COMPAT_THRESHOLD = 8;
 
         PHASED_SEARCH = false;
     }

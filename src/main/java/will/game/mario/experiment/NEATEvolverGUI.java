@@ -43,7 +43,6 @@ public class NEATEvolverGUI extends Application {
         root.setLeft(checkbox);
 
         NEATParameters params = new NEATEnsembleParams();
-        params.POP_SIZE = 200;
 
         // define neat
         NEATMarioEvolver evolver = new NEATMarioEnsembleEvolver(params, () -> new StandardHoldStrat());

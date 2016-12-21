@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ModularNEAT:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ModularNEAT_jar</output-path>
+    <root id="archive" name="ModularNEAT.jar">
+      <element id="module-output" name="ModularNEAT" />
+      <element id="module-output" name="encog-core" />
+      <element id="module-output" name="MarioAI4J" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/MarioAI4J/lib/asm-all-3.3.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

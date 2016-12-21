@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MarioAI4J/MarioAI4J.iml" filepath="$PROJECT_DIR$/MarioAI4J/MarioAI4J.iml" />
       <module fileurl="file://$PROJECT_DIR$/ModularNEAT.iml" filepath="$PROJECT_DIR$/ModularNEAT.iml" />
-      <module fileurl="file://$PROJECT_DIR$/encog-java-core/encog-java-core.iml" filepath="$PROJECT_DIR$/encog-java-core/encog-java-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/encog-java-core/encog-core.iml" filepath="$PROJECT_DIR$/encog-java-core/encog-core.iml" />
     </modules>
   </component>
 </project>

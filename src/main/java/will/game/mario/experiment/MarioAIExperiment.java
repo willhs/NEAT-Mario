@@ -71,7 +71,8 @@ public class MarioAIExperiment {
         MarioAIExperiment ex = new MarioAIExperiment(arg);
 //        ex.run();
 
-        ex.testing();
+//        ex.testing();
+        ex.runMultiExperiment();
     }
 
     public MarioAIExperiment(String name) {
@@ -120,9 +121,9 @@ public class MarioAIExperiment {
         NEATMarioEnsembleEvolver ensembleShared = new NEATMarioEnsembleEvolver(ensembleParams,
                 () -> new StandardHoldStrat(), sb, "ensemble-shared");
         EnsembleMasterMarioEvolver ensembleMaster = new EnsembleMasterMarioEvolver(ensembleParams,
-                () -> new SharedHoldStrat(), sb, "neat-shared-hold");
+                () -> new SharedHoldStrat(), sb, "ensemble-master-shared");
         MultiPopNEATMarioEvolver ensembleMulti = new MultiPopNEATMarioEvolver(ensembleParams,
-                () -> new StandardHoldStrat(), sb, "neat-phased");
+                () -> new StandardHoldStrat(), sb, "ensemble-master-multi");
 
         // run all experiments without dependencies
         testOnLevels(neatStandard);
@@ -139,8 +140,7 @@ public class MarioAIExperiment {
 
             int numFiles = outputDir.listFiles().length;
 
-//            String outputFilename = outputDirName + experimentName + "-" + numFiles + ".csv";
-            Path output = Paths.get(outputFilename);
+            Path output = Paths.get(outputDirName + outputFilename);
             // write string output to file
             try {
                 Files.write(output,

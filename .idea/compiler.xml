@@ -22,12 +22,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="encog-java-core" />
+        <module name="encog-core" />
         <module name="ModularNEAT" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="encog-java-core" target="1.8" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="encog-core" target="1.8" />
       <module name="ModularNEAT" target="1.8" />
     </bytecodeTargetLevel>
   </component>

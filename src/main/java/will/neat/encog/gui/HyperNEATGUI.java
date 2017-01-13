@@ -26,7 +26,7 @@ import org.encog.neural.neat.NEATPopulation;
 import will.game.mario.agent.encog.EncogAgent;
 import will.game.mario.fitness.AbstractMarioFitnessFunction;
 import will.game.mario.fitness.EncogMarioFitnessFunction;
-import will.game.mario.experiment.HyperNEATOldEvolver;
+import will.game.mario.experiment.evolve.HyperNEATOldEvolver;
 import will.game.mario.params.HyperNEATParameters;
 
 import java.util.logging.Logger;

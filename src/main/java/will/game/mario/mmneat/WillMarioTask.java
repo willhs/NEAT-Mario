@@ -37,14 +37,14 @@ public class WillMarioTask <T extends Network> extends NoisyLonerTask<T> impleme
 //        this.trials = Parameters.parameters.integerParameter("trials");
         this.trials = 1;
         this.simOptions = " "
-                + FastOpts.VIS_OFF + " "
+                + FastOpts.VIS_ON_2X + " "
                 + MARIO_TYPE
                 + LEVEL_LENGTH
                 + RECEPTIVE_FIELD_WIDTH
                 + RECEPTIVE_FIELD_HEIGHT
                 + RECEPTIVE_FIELD_MARIO_ROW
                 + RECEPTIVE_FIELD_MARIO_COL
-                + FastOpts.L_DIFFICULTY(Parameters.parameters.integerParameter("difficulty"));
+                + FastOpts.L_DIFFICULTY(Parameters.parameters.integerParameter("marioLevelDifficulty"));
 
         MMNEAT.registerFitnessFunction("Progress");
 
@@ -77,7 +77,6 @@ public class WillMarioTask <T extends Network> extends NoisyLonerTask<T> impleme
         MMNEATAgent agent = new MMNEATAgent(individual);
 
         for (int t = 0; t < trials; t++) {
-            // do trial with new random seed
             int seed = 1;
 //            int seed = new Random().nextInt();
 

@@ -17,8 +17,8 @@ public class ExperimentPostProcessing {
 
     private static final int LEVELS = 5;
 
-    private static String ROOT_RESULTS_DIR = "grid-results/";
-    private static String EXPERIMENT_NAME = "ensemble-master";
+    private static String ROOT_RESULTS_DIR = "grid_results/mm/mm-processed/";
+    private static String EXPERIMENT_NAME = "mario-mm-neat-phased-2941476";
 
     private static String ROOT_OUTPUT_DIR = ROOT_RESULTS_DIR + "averaged/";
     private static String OUTPUT_FILENAME = EXPERIMENT_NAME + ".csv";
@@ -59,23 +59,33 @@ public class ExperimentPostProcessing {
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-                    scan.nextLine(); // skip header
+//                    scan.nextLine(); // skip header
 
                     List<Tuple> tuples = new ArrayList<>();
                     while (scan.hasNext()) {
                         String[] parts = scan.nextLine().split(",");
                         try {
-                        tuples.add(new Tuple(
-                                Integer.parseInt(parts[1]),
-                                Double.parseDouble(parts[2]),
-                                Double.parseDouble(parts[3]),
-                                Double.parseDouble(parts[4]),
-                                Double.parseDouble(parts[5]),
-                                Double.parseDouble(parts[6]),
-                                Integer.parseInt(parts[7])
-                        ));
+                            if (parts.length == 2) {
+                                tuples.add(new Tuple(
+                                        Integer.parseInt(parts[0]),
+                                        Double.parseDouble(parts[1])
+                                ));
+                            } else if (parts.length == 7) {
+                                tuples.add(new Tuple(
+                                        Integer.parseInt(parts[1]),
+                                        Double.parseDouble(parts[2]),
+                                        Double.parseDouble(parts[3]),
+                                        Double.parseDouble(parts[4]),
+                                        Double.parseDouble(parts[5]),
+                                        Double.parseDouble(parts[6]),
+                                        Integer.parseInt(parts[7])
+                                ));
+                            } else {
+                                throw new RuntimeException("Tuple has weird number of elements");
+                            }
                         } catch (Exception e) {
                             System.err.println("malformed tuple");
+                            e.printStackTrace();
                         }
                     }
 
@@ -90,24 +100,6 @@ public class ExperimentPostProcessing {
 
         return averaged;
     }
-
-/*    private String[] separateFiles(File file) {
-        Scanner s = null;
-        try {
-            s = new Scanner(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        s.nextLine();
-
-        List<String> experiments = new ArrayList<>();
-        while (s.hasNext()) {
-            StringBuilder sb = new StringBuilder();
-            do {
-
-            } while ()
-        }
-    }*/
 
     private static class Tuple {
         public int gen;
@@ -128,6 +120,11 @@ public class ExperimentPostProcessing {
             this.species = species;
         }
 
+        public Tuple(int gen, double fitness) {
+            this.gen = gen;
+            this.fitness = fitness;
+        }
+
         public String toString() {
             return "gen: " + gen + ", fitness: " + fitness + ", aveCon: " + aveConns + ", aveNeur: " + aveNeurons;
         }
@@ -136,7 +133,7 @@ public class ExperimentPostProcessing {
 
     private static class TupleAverager implements Consumer<Tuple>
     {
-        private final int GENS = 1000;
+        private final int GENS = 1001;
         private int[] count = new int[GENS];
 
         private List<Double> fitnessTotal = new ArrayList<>(Collections.nCopies(GENS, 0.0));
@@ -151,12 +148,13 @@ public class ExperimentPostProcessing {
                     .mapToObj(i ->
                         new Tuple(
                                 i,
-                                fitnessTotal.get(i) / count[i],
-                                aveConnsTotal.get(i) / count[i],
-                                bestConnsTotal.get(i) / count[i],
-                                aveNeuronsTotal.get(i) / count[i],
-                                bestNeuronsTotal.get(i) / count[i],
-                                speciesTotal.get(i) / count[i]
+                                // prevent / by 0
+                                fitnessTotal.get(i) != 0 ? fitnessTotal.get(i)/ count[i] : 0,
+                                aveConnsTotal.get(i) != 0 ? aveConnsTotal.get(i) / count[i] : 0,
+                                bestConnsTotal.get(i) != 0 ? bestConnsTotal.get(i) / count[i] : 0,
+                                aveNeuronsTotal.get(i) != 0 ? aveNeuronsTotal.get(i) / count[i] : 0,
+                                bestNeuronsTotal.get(i) != 0 ? bestNeuronsTotal.get(i) / count[i] : 0,
+                                speciesTotal.get(i) != 0 ? speciesTotal.get(i) / count[i] : 0
                         )
                     ).toArray(s -> new Tuple[s]);
         }
@@ -176,7 +174,8 @@ public class ExperimentPostProcessing {
 
         @Override
         public void accept(Tuple tuple) {
-            int gen = tuple.gen - 1;
+//            int gen = tuple.gen - 1;
+            int gen = tuple.gen;
             count[gen]++;
             fitnessTotal.set(gen, fitnessTotal.get(gen) + tuple.fitness);
             aveConnsTotal.set(gen, aveConnsTotal.get(gen) + tuple.aveConns);

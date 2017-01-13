@@ -21,3 +21,5 @@
 /lib
 /target
 /out
+/grid_results
+**/META-INF

@@ -1,4 +1,4 @@
-package will.game.mario.experiment;
+package will.game.mario.experiment.evolve;
 
 import ch.idsia.benchmark.mario.options.FastOpts;
 import javafx.application.Application;
@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import will.game.mario.experiment.evolve.MultiPopNEATMarioEvolver;
 import will.game.mario.fitness.AbstractMarioFitnessFunction;
 import will.game.mario.params.NEATEnsembleParams;
 import will.neat.encog.gui.HyperNEATGUI;

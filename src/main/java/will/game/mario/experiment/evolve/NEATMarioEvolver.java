@@ -1,4 +1,4 @@
-package will.game.mario.experiment;
+package will.game.mario.experiment.evolve;
 
 import org.encog.ml.CalculateScore;
 import org.encog.ml.ea.opp.selection.TruncationSelection;

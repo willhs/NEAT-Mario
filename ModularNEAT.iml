@@ -19,5 +19,6 @@
         <jarDirectory url="file://$MODULE_DIR$/MarioAI4J/lib" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="MM-NEAT" />
   </component>
 </module>

@@ -55,6 +55,9 @@ public class MarioAIExperiment {
     public static final String NEAT_PHASED = "neat-phased";
     public static final String HYPERNEAT = "hyperneat";
     public static final String HYPERNEAT_PHASED = "hyperneat-phased";
+
+    private static final String ENSEMBLE_SHARED = "ensemble-shared";
+
     private String experimentName;
 
     public static void main(String[] args) throws IOException {
@@ -71,7 +74,6 @@ public class MarioAIExperiment {
         MarioAIExperiment ex = new MarioAIExperiment(arg);
 //        ex.run();
 
-//        ex.testing();
         ex.runMultiExperiment();
     }
 
@@ -110,52 +112,6 @@ public class MarioAIExperiment {
 //        testOnLevels(evolver);
     }
 
-    private void runMultiExperiment() throws IOException {
-        // init string output
-        StringBuilder sb = new StringBuilder();
-
-        NEATEnsembleParams ensembleParams = new NEATEnsembleParams();
-
-        NEATMarioEvolver neatStandard = new NEATMarioEvolver(neatParams,
-                () -> new StandardHoldStrat(), sb, "neat");
-        NEATMarioEnsembleEvolver ensembleShared = new NEATMarioEnsembleEvolver(ensembleParams,
-                () -> new StandardHoldStrat(), sb, "ensemble-shared");
-        EnsembleMasterMarioEvolver ensembleMaster = new EnsembleMasterMarioEvolver(ensembleParams,
-                () -> new SharedHoldStrat(), sb, "ensemble-master-shared");
-        MultiPopNEATMarioEvolver ensembleMulti = new MultiPopNEATMarioEvolver(ensembleParams,
-                () -> new StandardHoldStrat(), sb, "ensemble-master-multi");
-
-        // run all experiments without dependencies
-        testOnLevels(neatStandard);
-        testOnLevels(ensembleShared);
-        testOnLevels(ensembleMaster);
-        testOnLevels(ensembleMulti);
-
-        if (writeFile) {
-            // make sure output dir exists
-            File outputDir = new File(outputDirName);
-            if (!outputDir.exists()) {
-                outputDir.getAbsoluteFile().mkdirs();
-            }
-
-            int numFiles = outputDir.listFiles().length;
-
-            Path output = Paths.get(outputDirName + outputFilename);
-            // write string output to file
-            try {
-                Files.write(output,
-                        "algorithm,generation,fitness,ave-links,best-links,ave-nodes,best-nodes,species\n".getBytes(),
-                        StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-
-                Files.write(output, sb.toString().getBytes(),
-                        StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
     private void runSingleExperiment() {
         // initialise parameters
         NEATParameters neatPhasedParams = new NEATParameters();
@@ -166,6 +122,8 @@ public class MarioAIExperiment {
 
         NEATParameters neatShareActionParams = new NEATParameters();
         neatShareActionParams.NUM_OUTPUTS = 5;
+
+        NEATEnsembleParams ensembleParams = new NEATEnsembleParams();
 
         StringBuilder sb = new StringBuilder();
 
@@ -189,15 +147,51 @@ public class MarioAIExperiment {
         } else if (experimentName.equals(HYPERNEAT_PHASED)) {
             evolver = new HyperNEATMarioEvolver(hyperPhasedParams,
                     () -> new StandardHoldStrat(), sb, experimentName);
+        } else if (experimentName.equals(ENSEMBLE_SHARED)) {
+            evolver = new NEATMarioEnsembleEvolver(ensembleParams,
+                    () -> new StandardHoldStrat(), sb, experimentName);
         }
 
-        String level = levels[1];
+/*        String level = levels[1];
 
         evolver.setSimOptions(level);
-        evolver.run();
+        evolver.run();*/
+
+        testOnLevels(evolver);
+
+        if (writeFile) {
+            writeToFile(sb.toString());
+        }
     }
 
-    private void testOnLevels(NEATMarioEvolver evolver) throws IOException {
+    private void runMultiExperiment() throws IOException {
+        // init string output
+        StringBuilder sb = new StringBuilder();
+
+        NEATEnsembleParams ensembleParams = new NEATEnsembleParams();
+
+        NEATMarioEvolver neatStandard = new NEATMarioEvolver(neatParams,
+                () -> new StandardHoldStrat(), sb, "neat");
+        NEATMarioEnsembleEvolver ensembleShared = new NEATMarioEnsembleEvolver(ensembleParams,
+                () -> new StandardHoldStrat(), sb, "ensemble-shared");
+        EnsembleMasterMarioEvolver ensembleMaster = new EnsembleMasterMarioEvolver(ensembleParams,
+                () -> new SharedHoldStrat(), sb, "ensemble-master-shared");
+        MultiPopNEATMarioEvolver ensembleMulti = new MultiPopNEATMarioEvolver(ensembleParams,
+                () -> new StandardHoldStrat(), sb, "emsemble-master-multi");
+
+        // run all experiments without dependencies
+        testOnLevels(neatStandard);
+        testOnLevels(ensembleShared);
+        testOnLevels(ensembleMaster);
+        testOnLevels(ensembleMulti);
+
+        if (writeFile) {
+            writeToFile(sb.toString());
+        }
+    }
+
+
+    private void testOnLevels(NEATMarioEvolver evolver) {
         String basicName = evolver.getName();
         TrainEA[] results = new TrainEA[levels.length];
         for (int l = 0; l < levels.length; l++) {
@@ -221,6 +215,31 @@ public class MarioAIExperiment {
             results[l] = evolver.run();
         }
     }
+
+    private void writeToFile(String s) {
+        // make sure output dir exists
+        File outputDir = new File(outputDirName);
+        if (!outputDir.exists()) {
+            outputDir.getAbsoluteFile().mkdirs();
+        }
+
+        int numFiles = outputDir.listFiles().length;
+
+//            String outputFilename = outputDirName + experimentName + "-" + numFiles + ".csv";
+        Path output = Paths.get(outputFilename);
+        // write string output to file
+        try {
+            Files.write(output,
+                    "algorithm,generation,fitness,ave-links,best-links,ave-nodes,best-nodes,species\n".getBytes(),
+                    StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+
+            Files.write(output, s.getBytes(),
+                    StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private Point[] extractFeatures(NEATNetwork network) {
         NEATLink[] links = network.getLinks();

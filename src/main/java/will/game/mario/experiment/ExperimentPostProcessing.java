@@ -17,15 +17,16 @@ public class ExperimentPostProcessing {
 
     private static final int LEVELS = 5;
 
-    private static String ROOT_RESULTS_DIR = "grid_results/mm/mm-processed/";
-    private static String EXPERIMENT_NAME = "mario-mm-neat-phased-2941476";
+    private static String ROOT_RESULTS_DIR = "grid_results/mm/mario-mm-neat-2945726/arranged/";
+    private static String EXPERIMENT_NAME = "phased-400";
+    private static String EXPERIMENT_DIR = EXPERIMENT_NAME;
 
     private static String ROOT_OUTPUT_DIR = ROOT_RESULTS_DIR + "averaged/";
     private static String OUTPUT_FILENAME = EXPERIMENT_NAME + ".csv";
 
     public static void main(String[] args) throws Exception {
         Tuple[] averagedResults = averageResults(
-                Arrays.stream(new File(ROOT_RESULTS_DIR + EXPERIMENT_NAME).listFiles())
+                Arrays.stream(new File(ROOT_RESULTS_DIR + EXPERIMENT_DIR).listFiles())
                     .filter(file -> !file.isDirectory())
                     .toArray(s -> new File[s])
         );
@@ -63,9 +64,13 @@ public class ExperimentPostProcessing {
 
                     List<Tuple> tuples = new ArrayList<>();
                     while (scan.hasNext()) {
-                        String[] parts = scan.nextLine().split(",");
+                        String[] parts = scan.nextLine().split("\t");
                         try {
-                            if (parts.length == 2) {
+                            tuples.add(new Tuple(
+                                    Integer.parseInt(parts[0]),
+                                    Double.parseDouble(parts[3])
+                            ));
+/*                            if (parts.length == 2) {
                                 tuples.add(new Tuple(
                                         Integer.parseInt(parts[0]),
                                         Double.parseDouble(parts[1])
@@ -82,7 +87,7 @@ public class ExperimentPostProcessing {
                                 ));
                             } else {
                                 throw new RuntimeException("Tuple has weird number of elements");
-                            }
+                            }*/
                         } catch (Exception e) {
                             System.err.println("malformed tuple");
                             e.printStackTrace();

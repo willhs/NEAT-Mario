@@ -14,8 +14,12 @@ import edu.utexas.cs.nn.parameters.Parameters;
 import edu.utexas.cs.nn.tasks.NoisyLonerTask;
 import edu.utexas.cs.nn.util.datastructures.Pair;
 import will.game.mario.agent.MarioNEATAgent;
+import will.game.mario.fitness.AbstractMarioFitnessFunction;
 
 import java.util.List;
+
+import static will.game.mario.fitness.AbstractMarioFitnessFunction.DEFAULT_SIM_OPTIONS;
+import static will.game.mario.fitness.AbstractMarioFitnessFunction.DIFFICULTY;
 
 /**
  * Created by hardwiwill on 21/12/16.
@@ -30,6 +34,16 @@ public class WillMarioTask <T extends Network> extends NoisyLonerTask<T> impleme
     public static final String RECEPTIVE_FIELD_MARIO_ROW = " " + MarioOptions.IntOption.AI_MARIO_EGO_ROW.getParam() + " 6";
     public static final String RECEPTIVE_FIELD_MARIO_COL = " " + MarioOptions.IntOption.AI_MARIO_EGO_COLUMN.getParam() + " 6";
 
+    private static final String DEFAULT_LEVEL = AbstractMarioFitnessFunction.LEVEL;
+
+    private String[] levels = {
+            DEFAULT_SIM_OPTIONS.replace(DEFAULT_LEVEL, FastOpts.LEVEL_05_GAPS)
+                    .replace(DIFFICULTY, FastOpts.L_DIFFICULTY(1)),
+            DEFAULT_SIM_OPTIONS.replace(DEFAULT_LEVEL, FastOpts.LEVEL_06_GOOMBA),
+            DEFAULT_SIM_OPTIONS.replace(DEFAULT_LEVEL, FastOpts.LEVEL_07_SPIKY),
+            DEFAULT_SIM_OPTIONS.replace(DEFAULT_LEVEL, FastOpts.LEVEL_08_FLY_SPIKY)
+    };
+
     private int trials;
     private String simOptions;
 
@@ -37,9 +51,10 @@ public class WillMarioTask <T extends Network> extends NoisyLonerTask<T> impleme
 //        this.trials = Parameters.parameters.integerParameter("trials");
         this.trials = 1;
         this.simOptions = " "
-                + FastOpts.VIS_ON_2X + " "
+                + FastOpts.VIS_OFF + " "
                 + MARIO_TYPE
                 + LEVEL_LENGTH
+                + DEFAULT_LEVEL
                 + RECEPTIVE_FIELD_WIDTH
                 + RECEPTIVE_FIELD_HEIGHT
                 + RECEPTIVE_FIELD_MARIO_ROW

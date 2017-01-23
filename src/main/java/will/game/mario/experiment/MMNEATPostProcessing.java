@@ -19,21 +19,23 @@ import java.util.stream.Collectors;
 public class MMNEATPostProcessing {
 
     private static String ROOT_RESULTS_DIR = "grid_results/mm/";
-    private static String EXPERIMENT_NAME = "mario-mm-neat-phased-2941476";
+    private static String EXPERIMENT_NAME = "-phased";
 
     private static String ROOT_OUTPUT_DIR = ROOT_RESULTS_DIR + "mm-processed/";
 
     public static void main(String[] args) {
 
-        File[] trialDirs = Arrays.stream(new File(ROOT_RESULTS_DIR + EXPERIMENT_NAME).listFiles())
+/*        File[] trialDirs = Arrays.stream(new File(ROOT_RESULTS_DIR + EXPERIMENT_NAME).listFiles())
                 .filter(file -> file.isDirectory())
-                .toArray(s -> new File[s]);
+                .toArray(s -> new File[s]);*/
+
+        File[] trialDirs = new File[] { new File(ROOT_RESULTS_DIR + EXPERIMENT_NAME) };
 
         for (int i = 0; i < trialDirs.length; i++) {
             File dir = trialDirs[i];
             // obtain the best scores and their corresponding generation from each parent generation file
-            List<String> scores = Arrays.stream(dir.listFiles()[0].listFiles())
-                    .filter(f -> f.getName().contains("parents_gen"))
+            List<String> scores = Arrays.stream(dir.listFiles())
+//                    .filter(f -> f.getName().contains("parents_gen"))
                     .map(f -> {
                         // get generation number from filename
                         String filename = f.getName();

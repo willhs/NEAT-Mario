@@ -22,3 +22,5 @@
 /target
 /out
 /MarioAI4J
+/grid_results
+**/META-INF

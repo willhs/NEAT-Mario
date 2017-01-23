@@ -5,6 +5,7 @@ import ch.idsia.benchmark.mario.options.FastOpts;
 import org.encog.ml.ea.train.basic.TrainEA;
 import org.encog.neural.neat.NEATLink;
 import org.encog.neural.neat.NEATNetwork;
+import will.game.mario.experiment.evolve.*;
 import will.game.mario.fitness.AbstractMarioFitnessFunction;
 import will.game.mario.params.HyperNEATParameters;
 import will.game.mario.params.HyperNEATParametersPSO;

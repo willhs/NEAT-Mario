@@ -1,4 +1,4 @@
-package will.game.mario.experiment;
+package will.game.mario.experiment.evolve;
 
 import org.encog.ml.train.strategy.end.EndIterationsStrategy;
 import org.encog.neural.neat.NEATCODEC;

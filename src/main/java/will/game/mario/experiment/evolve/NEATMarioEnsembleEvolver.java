@@ -1,4 +1,4 @@
-package will.game.mario.experiment;
+package will.game.mario.experiment.evolve;
 
 import org.encog.ml.CalculateScore;
 import org.encog.ml.ea.genome.GenomeFactory;
@@ -17,11 +17,8 @@ import will.game.mario.rf.action.ActionStratFactory;
 import will.neat.encog.MutatePerturbOrResetLinkWeight;
 import will.neat.encog.PhasedSearch;
 import will.neat.encog.ensemble.EnsembleDiversityFF;
-import will.neat.encog.ensemble.GenotypeFF;
-import will.neat.encog.ensemble.TrainEAGenotypeFF;
 import will.neat.encog.ensemble.codec.EnsembleCODEC;
 import will.neat.encog.ensemble.factory.FactorEnsembleGenome;
-import will.neat.encog.ensemble.factory.FactorEnsembleMaster;
 import will.neat.encog.ensemble.mutation.simple.*;
 import will.neat.encog.ensemble.speciation.EnsembleNEATSpeciation;
 import will.neat.encog.ensemble.NEATEnsemblePopulation;

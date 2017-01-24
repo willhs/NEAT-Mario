@@ -17,6 +17,7 @@ import will.game.mario.agent.MarioNEATAgent;
 import will.game.mario.fitness.AbstractMarioFitnessFunction;
 
 import java.util.List;
+import java.util.Random;
 
 import static will.game.mario.fitness.AbstractMarioFitnessFunction.DEFAULT_SIM_OPTIONS;
 import static will.game.mario.fitness.AbstractMarioFitnessFunction.DIFFICULTY;
@@ -90,12 +91,15 @@ public class WillMarioTask <T extends Network> extends NoisyLonerTask<T> impleme
     public Pair<double[], double[]> oneEval(Genotype<T> individual, int num) {
         double fitnessSum = 0;
         MMNEATAgent agent = new MMNEATAgent(individual);
+        int experimentSeed = Parameters.parameters.integerParameter("randomSeed");
 
         for (int t = 0; t < trials; t++) {
-            int seed = 1;
-//            int seed = new Random().nextInt();
+            int trialSeed = experimentSeed; //new Random()
 
-            float trialFitness = playMario(agent, simOptions);
+            String trialOptions = simOptions
+                    + " " + MarioOptions.IntOption.LEVEL_RANDOM_SEED.getParam() + " " + trialSeed;
+
+            float trialFitness = playMario(agent, trialOptions);
 
             fitnessSum += trialFitness;
         }
@@ -125,5 +129,25 @@ public class WillMarioTask <T extends Network> extends NoisyLonerTask<T> impleme
     @Override
     public double getTimeStamp() {
         return 0; // doesn't apply?
+    }
+
+    public double test(Genotype<T> genotype, int trials) {
+        double fitnessSum = 0;
+        MMNEATAgent agent = new MMNEATAgent(genotype);
+        int experimentSeed = Parameters.parameters.integerParameter("randomSeed");
+        Random random = new Random(experimentSeed);
+
+        for (int t = 0; t < trials; t++) {
+            int trialSeed = random.nextInt();
+            String trialOptions = simOptions
+                    + " " + MarioOptions.IntOption.LEVEL_RANDOM_SEED.getParam() + " " + trialSeed;
+
+            float trialFitness = playMario(agent, trialOptions);
+
+            fitnessSum += trialFitness;
+        }
+
+        double averageFitness = fitnessSum / trials;
+        return averageFitness;
     }
 }

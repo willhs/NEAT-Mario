@@ -13,8 +13,6 @@ import java.util.*;
  */
 public class DeleteLinkSandpileMutate extends NEATMutation {
 
-    private double sandpileSlope = 1;
-
     public DeleteLinkSandpileMutate(double sandpileSlope) {
         this.sandpileSlope = sandpileSlope;
     }
@@ -42,24 +40,4 @@ public class DeleteLinkSandpileMutate extends NEATMutation {
         }
     }
 
-    private NEATBaseGene chooseGeneSandpile(List<NEATBaseGene> genes, Random rnd) {
-        // assign each link gene a border in probabilty space
-        Map<Double, NEATBaseGene> positionsMap = new HashMap<>();
-        double sum = 0;
-        for (int i = 0; i < genes.size(); i++) {
-            NEATBaseGene l = genes.get(i);
-            double weight = Math.pow(i+1, -sandpileSlope);
-            sum += weight;
-            positionsMap.put(sum, l);
-        }
-
-        // choose a gene based on the probability distribution
-        double random = rnd.nextDouble() * sum;
-        List<Double> positions = new ArrayList<>(positionsMap.keySet());
-        Collections.sort(positions);
-
-        double position = positions.stream()
-                .filter(p -> p >= random).findFirst().get();
-        return positionsMap.get(position);
-    }
 }

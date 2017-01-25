@@ -24,7 +24,12 @@ public class NEATEvolverGUI extends Application {
     private static Logger logger = Logger.getLogger(HyperNEATGUI.class
             .getSimpleName());
 
-    public NEATEvolverGUI() {
+    private NEATMarioEvolver evolver;
+
+    public NEATEvolverGUI() { }
+
+    public NEATEvolverGUI(NEATMarioEvolver evolver) {
+        this.evolver = evolver;
     }
 
     @Override
@@ -45,13 +50,13 @@ public class NEATEvolverGUI extends Application {
 
         NEATParameters params = new NEATEnsembleParams();
 
-        // define neat
+/*        // define neat
         MultiPopNEATMarioEvolver evolver = new MultiPopNEATMarioEvolver(params, () -> new StandardHoldStrat());
         String simOptions = AbstractMarioFitnessFunction.DEFAULT_SIM_OPTIONS
                 .replace(AbstractMarioFitnessFunction.LEVEL,
                         FastOpts.LEVEL_08_FLY_SPIKY
                 );
-        evolver.setSimOptions(simOptions);
+        evolver.setSimOptions(simOptions);*/
 
         Task<Void> evolve = new Task<Void>() {
             @Override

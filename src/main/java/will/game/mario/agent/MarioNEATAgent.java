@@ -24,6 +24,7 @@ public abstract class MarioNEATAgent extends MarioAIBase2 {
 
     private final ActionStratFactory DEFAULT_ACTION_STRAT_FACTORY = () -> new StandardHoldStrat();
     private ActionStratFactory actionStratFactory = DEFAULT_ACTION_STRAT_FACTORY;
+    protected GameEnvironment env = new EnvEnemyGrid();
 
     public MarioNEATAgent(){}
 
@@ -32,13 +33,11 @@ public abstract class MarioNEATAgent extends MarioAIBase2 {
     }
 
     public MarioNEATAgent(ActionStratFactory stratFactory) {
-        this.actionStratFactory = actionStratFactory;
+        this.actionStratFactory = stratFactory;
     }
 
     @Override
     public MarioInput actionSelection() {
-        GameEnvironment env = new EnvEnemyGrid();
-
         return actionSelection(env);
     }
 

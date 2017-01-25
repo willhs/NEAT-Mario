@@ -85,7 +85,7 @@ public abstract class MarioAIBase2 extends MarioAgentBase {
 		}
 	}
 
-	private int fitness(EvaluationInfo info) {
+	protected int fitness(EvaluationInfo info) {
 /*        return info.distancePassedCells
 				- (info.timeSpent / 10)
 				+ (info.killsTotal * 5);*/

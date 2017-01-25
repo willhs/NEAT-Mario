@@ -36,6 +36,14 @@ public abstract class AbstractPhasedSearch implements Strategy {
         this.train = (TrainEA) train;
     }
 
+    public void finalizeOps() {
+        // add ops of the current phase
+        this.train.getOperators().getList().addAll(phaseOps[phase.ordinal()].getList());
+
+        // finalize (make probabilities add to 1)
+        this.train.getOperators().finalizeStructure();
+    }
+
     @Override
     public void postIteration() { }
 

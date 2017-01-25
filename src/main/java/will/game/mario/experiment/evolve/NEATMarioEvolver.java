@@ -16,6 +16,9 @@ import org.encog.neural.neat.training.species.OriginalNEATSpeciation;
 import will.game.mario.agent.factory.AgentFactory;
 import will.game.mario.agent.encog.EncogAgent;
 import will.game.mario.fitness.EncogMarioFitnessFunction;
+import will.game.mario.rf.action.StandardHoldStrat;
+import will.game.mario.rf.environment.EnvEnemyGrid;
+import will.game.mario.rf.environment.GameEnvironment;
 import will.neat.encog.MutatePerturbOrResetLinkWeight;
 import will.neat.encog.BasicPhasedSearch;
 import will.neat.encog.substrate.MultiHiddenLayerSubstrate;
@@ -28,21 +31,43 @@ import will.game.mario.rf.action.ActionStratFactory;
  */
 public class NEATMarioEvolver {
 
-    private String simOptions;
-    private NEATParameters params;
-    private ActionStratFactory stratFactory;
-    private String name = "NEAT";
+    protected EncogAgent.FitnessFunction ff;
+    protected String simOptions;
+    protected NEATParameters params;
+    protected ActionStratFactory stratFactory = () -> new StandardHoldStrat();
+    protected String name = "NEAT";
+    protected GameEnvironment env = new EnvEnemyGrid();
 
-    private StringBuilder output;
-    private boolean printOutput;
+    protected StringBuilder output;
+    private boolean printOutput = true;
+
+    public NEATMarioEvolver(NEATParameters params, GameEnvironment env,
+                            StringBuilder output, String name) {
+        this.params = params;
+        this.name = name;
+        this.output = output;
+        this.env = env;
+    }
 
     public NEATMarioEvolver(NEATParameters params, ActionStratFactory actionStratFactory,
                             StringBuilder output, String name) {
-        this.params = params;
-        this.stratFactory = actionStratFactory;
+        this(params, actionStratFactory);
         this.name = name;
-        this.printOutput = true;
         this.output = output;
+    }
+
+    public NEATMarioEvolver(NEATParameters params, ActionStratFactory actionStratFactory,
+                            StringBuilder output, String name, EncogAgent.FitnessFunction ff) {
+        this(params, actionStratFactory);
+        this.name = name;
+        this.output = output;
+        this.ff = ff;
+    }
+
+    public NEATMarioEvolver(NEATParameters params, ActionStratFactory actionStratFactory,
+                            StringBuilder output, String name, EncogAgent.FitnessFunction ff, GameEnvironment env) {
+        this(params, actionStratFactory, output, name, ff);
+        this.env = env;
     }
 
     public NEATMarioEvolver(NEATParameters params, ActionStratFactory actionStratFactory) {
@@ -56,6 +81,10 @@ public class NEATMarioEvolver {
         TrainEA neat = setupNEAT(params, simOptions,
                 setupAgent(stratFactory));
 
+        return run(neat);
+    }
+
+    public TrainEA run(TrainEA neat) {
         while (!neat.isTrainingDone()) {
             neat.iteration();
             logIteration(neat, output);
@@ -65,7 +94,8 @@ public class NEATMarioEvolver {
     }
 
     protected AgentFactory setupAgent(ActionStratFactory stratFactory) {
-        return (nn) -> new EncogAgent(nn, stratFactory);
+        return ff == null ? (nn) -> new EncogAgent(nn, stratFactory, env)
+                : (nn) -> new EncogAgent(nn, stratFactory, env, ff);
     }
 
     protected TrainEA setupNEAT(NEATParameters params, String marioOptions, AgentFactory agentFactory) {
@@ -124,7 +154,6 @@ public class NEATMarioEvolver {
             neat.addOperation(params.REMOVE_NEURON_PROB, new NEATMutateRemoveNeuron());
         }
         neat.getOperators().finalizeStructure();
-
 
         neat.setThreadCount(1);
 
@@ -186,5 +215,9 @@ public class NEATMarioEvolver {
 
     public void setSimOptions(String simOptions) {
         this.simOptions = simOptions;
+    }
+
+    public TrainEA getNEAT() {
+        return setupNEAT(params, simOptions, setupAgent(stratFactory));
     }
 }

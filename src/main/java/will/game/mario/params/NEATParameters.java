@@ -36,8 +36,8 @@ public class NEATParameters {
     public double ADD_CONN_PROB = 0.8;
     public double ADD_NEURON_PROB = 0.7;
     public double PERTURB_PROB = 0.5;
-    public double REMOVE_CONN_PROB = 0.1;
-    public double REMOVE_NEURON_PROB = 0.1;
+    public double REMOVE_CONN_PROB = 0.6;
+    public double REMOVE_NEURON_PROB = 0.3;
 
     public WeightMutType WEIGHT_MUT_TYPE = WeightMutType.PROPORTIONAL;
     public double WEIGHT_PERTURB_PROP = 0.1;

@@ -29,9 +29,9 @@ public class ManualAgent extends MarioHijackAIBase implements IAgent {
 
 	public MarioInput actionSelectionAI() {
 
-		int fitness = info.distancePassedCells
-				- (info.timeSpent/10)
-				+ info.killsTotal * 5;
+		int fitness = info.distancePassedCells;
+//				- (info.timeSpent/10)
+//				+ info.killsTotal * 5;
 
 		System.out.println(fitness);
 

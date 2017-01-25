@@ -30,7 +30,7 @@ public class EnsembleMAddLink extends EnsembleAddLink {
                         ? ensemble.getAnns()[whichAnn]
                         : ensemble.getMaster();
 
-        peformOperation(targetAnn, rnd);
+        performOperation(targetAnn, rnd);
     }
 }
 

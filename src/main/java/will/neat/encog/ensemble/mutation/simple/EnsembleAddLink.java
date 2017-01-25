@@ -1,13 +1,9 @@
 package will.neat.encog.ensemble.mutation.simple;
 
-import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.Genome;
-import org.encog.neural.neat.NEATNeuronType;
-import org.encog.neural.neat.training.NEATNeuronGene;
 import org.encog.neural.neat.training.SingleNEATGenome;
 import org.encog.neural.neat.training.opp.NEATMutateAddLink;
 import will.neat.encog.ensemble.genome.NEATEnsembleGenome;
-import will.neat.encog.ensemble.NEATEnsemblePopulation;
 
 import java.util.Random;
 
@@ -29,6 +25,6 @@ public class EnsembleAddLink extends NEATMutateAddLink {
         int whichAnn = rnd.nextInt(ensemble.getNumAnns());
         SingleNEATGenome targetAnn = ensemble.getAnns()[whichAnn];
 
-        peformOperation(targetAnn, rnd);
+        performOperation(targetAnn, rnd);
     }
 }

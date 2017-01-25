@@ -14,7 +14,7 @@ import org.encog.neural.neat.training.opp.links.SelectProportion;
 import org.encog.neural.neat.training.species.OriginalNEATSpeciation;
 import will.game.mario.fitness.EncogMarioFitnessFunction;
 import will.neat.encog.MutatePerturbOrResetLinkWeight;
-import will.neat.encog.PhasedSearch;
+import will.neat.encog.BasicPhasedSearch;
 import will.pso.Feature;
 import will.pso.WillProblem;
 
@@ -112,7 +112,7 @@ public class EncogNEATMarioProblem extends WillProblem {
         neat.addOperation(features.get(REMOVE_NEURON_PROB.name()), new NEATMutateRemoveNeuron());*/
         neat.getOperators().finalizeStructure();
 
-        PhasedSearch phasedSearch = new PhasedSearch((int)(double)features.get(PHASE_LENGTH.name()));
+        BasicPhasedSearch phasedSearch = new BasicPhasedSearch((int)(double)features.get(PHASE_LENGTH.name()));
         neat.addStrategy(phasedSearch);
         phasedSearch.addPhaseOp(0, features.get(ADD_CONN_PROB.name()), new NEATMutateAddLink());
         phasedSearch.addPhaseOp(0, features.get(ADD_NEURON_PROB.name()), new NEATMutateAddNeuron());

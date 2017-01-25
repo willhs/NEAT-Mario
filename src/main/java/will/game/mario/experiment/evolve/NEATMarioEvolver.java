@@ -17,7 +17,7 @@ import will.game.mario.agent.factory.AgentFactory;
 import will.game.mario.agent.encog.EncogAgent;
 import will.game.mario.fitness.EncogMarioFitnessFunction;
 import will.neat.encog.MutatePerturbOrResetLinkWeight;
-import will.neat.encog.PhasedSearch;
+import will.neat.encog.BasicPhasedSearch;
 import will.neat.encog.substrate.MultiHiddenLayerSubstrate;
 import will.game.mario.params.HyperNEATParameters;
 import will.game.mario.params.NEATParameters;
@@ -106,7 +106,7 @@ public class NEATMarioEvolver {
 
         // phased search (each phase has unique set of mutations)
         if (params.PHASED_SEARCH) {
-            PhasedSearch phasedSearch = new PhasedSearch(
+            BasicPhasedSearch phasedSearch = new BasicPhasedSearch(
                     params.PHASE_A_LENGTH, params.PHASE_B_LENGTH);
             neat.addStrategy(phasedSearch);
 

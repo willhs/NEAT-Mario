@@ -7,7 +7,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="encog-core" />
     <orderEntry type="module" module-name="MarioAI4J" />
     <orderEntry type="module-library">
       <library>
@@ -20,5 +19,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="MM-NEAT" />
+    <orderEntry type="module" module-name="encog-java-core" />
   </component>
 </module>

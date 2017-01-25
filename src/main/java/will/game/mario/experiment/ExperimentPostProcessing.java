@@ -17,11 +17,11 @@ public class ExperimentPostProcessing {
 
     private static final int LEVELS = 5;
 
-    private static String ROOT_RESULTS_DIR = "grid_results/mm/mario-mm-neat-2945726/arranged/";
-    private static String EXPERIMENT_NAME = "phased-400";
-    private static String EXPERIMENT_DIR = EXPERIMENT_NAME;
+    private static String ROOT_RESULTS_DIR = "/vol/grid-solar/sgeusers/hardwiwill/results/mario/jan25/mario-mm-neat-sandpile-2946517/extracted/";
+    private static String EXPERIMENT_NAME = "both-100";
+    private static String EXPERIMENT_DIR = EXPERIMENT_NAME + "/train/";
 
-    private static String ROOT_OUTPUT_DIR = ROOT_RESULTS_DIR + "averaged/";
+    private static String ROOT_OUTPUT_DIR = ROOT_RESULTS_DIR + "averaged/train/";
     private static String OUTPUT_FILENAME = EXPERIMENT_NAME + ".csv";
 
     public static void main(String[] args) throws Exception {

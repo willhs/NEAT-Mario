@@ -15,7 +15,7 @@ import will.game.mario.params.NEATEnsembleParams;
 import will.game.mario.params.NEATParameters;
 import will.game.mario.rf.action.ActionStratFactory;
 import will.neat.encog.MutatePerturbOrResetLinkWeight;
-import will.neat.encog.PhasedSearch;
+import will.neat.encog.BasicPhasedSearch;
 import will.neat.encog.ensemble.EnsembleDiversityFF;
 import will.neat.encog.ensemble.codec.EnsembleCODEC;
 import will.neat.encog.ensemble.factory.FactorEnsembleGenome;
@@ -88,7 +88,7 @@ public class NEATMarioEnsembleEvolver extends NEATMarioEvolver {
 
         // phased search (each phase has unique set of mutations)
         if (params.PHASED_SEARCH) {
-            PhasedSearch phasedSearch = new PhasedSearch(
+            BasicPhasedSearch phasedSearch = new BasicPhasedSearch(
                     params.PHASE_A_LENGTH, params.PHASE_B_LENGTH);
             neat.addStrategy(phasedSearch);
 

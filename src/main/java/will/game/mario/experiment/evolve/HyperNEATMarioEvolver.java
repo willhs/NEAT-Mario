@@ -14,7 +14,7 @@ import org.encog.neural.neat.training.species.OriginalNEATSpeciation;
 import will.game.mario.agent.factory.AgentFactory;
 import will.game.mario.fitness.EncogMarioFitnessFunction;
 import will.neat.encog.MutatePerturbOrResetLinkWeight;
-import will.neat.encog.PhasedSearch;
+import will.neat.encog.BasicPhasedSearch;
 import will.game.mario.params.HyperNEATParameters;
 import will.game.mario.params.NEATParameters;
 import will.game.mario.rf.action.ActionStratFactory;
@@ -76,7 +76,7 @@ public class HyperNEATMarioEvolver extends NEATMarioEvolver {
         neat.addOperation(hyperParams.PERTURB_PROB, weightMutation);
 
         if (hyperParams.PHASED_SEARCH) {
-            PhasedSearch phasedSearch = new PhasedSearch(
+            BasicPhasedSearch phasedSearch = new BasicPhasedSearch(
                     params.PHASE_A_LENGTH, params.PHASE_B_LENGTH);
             neat.addStrategy(phasedSearch);
 

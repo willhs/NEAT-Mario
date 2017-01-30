@@ -456,6 +456,14 @@ public class MarioOptions {
 	// ==============
 	
 	public static void reset(String... args) {
+        // clear all existing options
+		MarioOptions opts = getInstance();
+		opts.bools.clear();
+		opts.ints.clear();
+		opts.floats.clear();
+		opts.strings.clear();
+
+		// read args
 		read(args);
 		reset();
 	}

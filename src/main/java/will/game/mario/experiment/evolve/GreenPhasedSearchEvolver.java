@@ -16,9 +16,10 @@ import will.game.mario.fitness.AbstractMarioFitnessFunction;
 import will.game.mario.fitness.EncogMarioFitnessFunction;
 import will.game.mario.params.HyperNEATParameters;
 import will.game.mario.params.NEATParameters;
+import will.game.mario.params.PhasedParameters;
 import will.game.mario.rf.environment.EnvEnemyGrid;
 import will.game.mario.rf.environment.GameEnvironment;
-import will.neat.encog.BasicPhasedSearch;
+import will.neat.encog.DeleteNodeGreenMutate;
 import will.neat.encog.GreenPhasedSearch;
 import will.neat.encog.MutatePerturbOrResetLinkWeight;
 
@@ -26,9 +27,8 @@ import will.neat.encog.MutatePerturbOrResetLinkWeight;
  * Created by Will on 26/01/2017.
  */
 public class GreenPhasedSearchEvolver extends NEATMarioEvolver {
-    public GreenPhasedSearchEvolver(NEATParameters params, GameEnvironment env, StringBuilder output, String name, EncogAgent.FitnessFunction ff) {
-        super(params, env, output, name);
-        this.ff = ff;
+    public GreenPhasedSearchEvolver(PhasedParameters params, String simOptions, GameEnvironment env, StringBuilder output, String name, EncogAgent.FitnessFunction ff, int seed) {
+        super(params, simOptions, env, output, name, ff, 0);
     }
 
     @Override
@@ -68,10 +68,13 @@ public class GreenPhasedSearchEvolver extends NEATMarioEvolver {
         neat.addOperation(params.CROSSOVER_PROB, new NEATCrossover());
         neat.addOperation(params.PERTURB_PROB, weightMutation);
 
+        PhasedParameters phasedParams = (PhasedParameters) params;
+
         // phased search (each phase has unique set of mutations)
         GreenPhasedSearch phasedSearch = new GreenPhasedSearch(
-                params.PHASE_A_LENGTH, params.PHASE_B_LENGTH, 70);
-        neat.addStrategy(phasedSearch);
+                phasedParams.MPC_JUMP, phasedParams.MIN_GENS_WITHOUT_IMPROVE,
+                phasedParams.MIN_SIMPLIFICATION_GENS);
+        phasedSearch.setPhase(phasedParams.STARTING_PHASE);
 
         // additive mutations
         phasedSearch.addPhaseOp(0, params.ADD_CONN_PROB, new NEATMutateAddLink());
@@ -79,8 +82,9 @@ public class GreenPhasedSearchEvolver extends NEATMarioEvolver {
 
         // subtractive mutations
         phasedSearch.addPhaseOp(1, params.REMOVE_CONN_PROB, new NEATMutateRemoveLink());
-        phasedSearch.addPhaseOp(1, params.REMOVE_NEURON_PROB, new NEATMutateRemoveNeuron());
-        phasedSearch.finalizeOps();
+        phasedSearch.addPhaseOp(1, params.REMOVE_NEURON_PROB, new DeleteNodeGreenMutate());
+
+        neat.addStrategy(phasedSearch); // must be after ops are added
 
         neat.getOperators().finalizeStructure();
 
@@ -93,15 +97,15 @@ public class GreenPhasedSearchEvolver extends NEATMarioEvolver {
 
     public static void main(String[] args) {
 
-        NEATParameters neatPhasedParams = new NEATParameters();
+        PhasedParameters neatPhasedParams = new PhasedParameters();
         neatPhasedParams.MAX_GENERATIONS = 500;
         neatPhasedParams.PHASED_SEARCH = true;
         neatPhasedParams.PHASE_A_LENGTH=5;
         neatPhasedParams.PHASE_B_LENGTH=5;
 
         StringBuilder sb = new StringBuilder();
-        GreenPhasedSearchEvolver g = new GreenPhasedSearchEvolver(neatPhasedParams, new EnvEnemyGrid(), sb, "test", null);
-        g.setSimOptions(AbstractMarioFitnessFunction.DEFAULT_SIM_OPTIONS);
+        GreenPhasedSearchEvolver g = new GreenPhasedSearchEvolver(neatPhasedParams,
+                AbstractMarioFitnessFunction.DEFAULT_SIM_OPTIONS, new EnvEnemyGrid(), sb, "test", null, 0);
         g.run();
     }
 }

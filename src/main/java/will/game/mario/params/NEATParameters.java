@@ -9,7 +9,7 @@ import org.encog.engine.network.activation.ActivationFunction;
 public class NEATParameters {
 
     //
-    public int POP_SIZE = 200;
+    public int POP_SIZE = 100;
     public int MAX_GENERATIONS = 1000;
 
     // nn
@@ -37,7 +37,7 @@ public class NEATParameters {
     public double ADD_NEURON_PROB = 0.7;
     public double PERTURB_PROB = 0.5;
     public double REMOVE_CONN_PROB = 0.6;
-    public double REMOVE_NEURON_PROB = 0.3;
+    public double REMOVE_NEURON_PROB = 0.2;
 
     public WeightMutType WEIGHT_MUT_TYPE = WeightMutType.PROPORTIONAL;
     public double WEIGHT_PERTURB_PROP = 0.1;

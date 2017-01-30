@@ -1,13 +1,10 @@
-package will.game.mario.experiment;
+package will.game.mario.experiment.runners;
 
-import ch.idsia.benchmark.mario.engine.generalization.Enemy;
 import ch.idsia.benchmark.mario.engine.generalization.Tile;
 import ch.idsia.benchmark.mario.options.FastOpts;
-import ch.idsia.benchmark.mario.options.MarioOptions;
 import org.encog.ml.ea.train.basic.TrainEA;
 import org.encog.neural.neat.NEATLink;
 import org.encog.neural.neat.NEATNetwork;
-import will.game.mario.agent.encog.EncogAgent;
 import will.game.mario.experiment.evolve.*;
 import will.game.mario.fitness.AbstractMarioFitnessFunction;
 import will.game.mario.params.HyperNEATParameters;
@@ -17,8 +14,6 @@ import will.game.mario.params.NEATParameters;
 import will.game.mario.rf.action.SharedHoldStrat;
 import will.game.mario.rf.action.StandardActionStrat;
 import will.game.mario.rf.action.StandardHoldStrat;
-import will.game.mario.rf.environment.EnvEnemyGrid;
-import will.game.mario.rf.environment.CoinEnvEnemyGrid;
 import will.neat.encog.ensemble.EA;
 
 import java.awt.*;
@@ -35,7 +30,7 @@ import static will.game.mario.fitness.AbstractMarioFitnessFunction.DIFFICULTY;
 /**
  * Created by Will on 8/10/2016.
  */
-public class MarioAIExperiment {
+public class ModularNEATExperiments {
 
     private NEATParameters neatParams = new NEATParameters();
     private HyperNEATParameters hyperParams = new HyperNEATParametersPSO();
@@ -62,9 +57,6 @@ public class MarioAIExperiment {
     public static final String HYPERNEAT = "hyperneat";
     public static final String HYPERNEAT_PHASED = "hyperneat-phased";
 
-    public static final String REVERSE = "reverse";
-    public static final String COINS = "coins";
-
     private static final String ENSEMBLE_SHARED = "ensemble-shared";
 
     private String experimentName;
@@ -80,49 +72,12 @@ public class MarioAIExperiment {
             outputFilename = args[1];
         }
 
-        MarioAIExperiment ex = new MarioAIExperiment(arg);
+        ModularNEATExperiments ex = new ModularNEATExperiments(arg);
 //        ex.run();
-
-        if (arg.equals(REVERSE)) {
-            ex.runReverse();
-        } else if (arg.equals(COINS)) {
-            ex.runCoins();
-        }
     }
 
-    public MarioAIExperiment(String name) {
+    public ModularNEATExperiments(String name) {
         this.experimentName = name;
-    }
-
-    public void testing() {
-        String level = levels[1];
-
-        StringBuilder sb = new StringBuilder();
-
-        NEATParameters neatPhasedParams = new NEATEnsembleParams();
-        neatPhasedParams.PHASED_SEARCH = true;
-
-        HyperNEATParameters hyperPhasedParams = new HyperNEATParametersPSO();
-        hyperPhasedParams.PHASED_SEARCH = true;
-
-        NEATParameters neatShareActionParams = new NEATParameters();
-        neatShareActionParams.NUM_OUTPUTS = 5;
-
-        NEATMarioEvolver evolver = null;
-
-        evolver = new NEATMarioEnsembleEvolver(neatParams,
-                () -> new StandardHoldStrat());
-
-//        evolver = new NEATMarioEnsembleEvolver(neatParams,
-//                () -> new StandardHoldStrat());
-
-//        evolver = new HyperNEATMarioEvolver(hyperPhasedParams,
-//                () -> new StandardHoldStrat(), sb, "hyper");
-
-        evolver.setSimOptions(level);
-        evolver.run();
-
-//        testOnLevels(evolver);
     }
 
     private void runSingleExperiment() {
@@ -251,105 +206,6 @@ public class MarioAIExperiment {
             e.printStackTrace();
         }
     }
-
-    private void runReverse() {
-        StringBuilder sb = new StringBuilder();
-
-        NEATParameters neatParams = new NEATParameters();
-        neatParams.MAX_GENERATIONS = 500;
-
-        // initialise parameters
-        NEATParameters neatPhasedParams = new NEATParameters();
-        neatPhasedParams.MAX_GENERATIONS = 500;
-        neatPhasedParams.PHASED_SEARCH = true;
-
-        int seed1 = 0;
-
-        String options1 = levels[1].concat(FastOpts.L_RANDOM_SEED(seed1));
-//        String options2 = levels[2].concat(FastOpts.L_RANDOM_SEED(seed2));
-
-        String options2 = levels[1]
-                + " " + MarioOptions.IntOption.LEVEL_MARIO_INITIAL_POSITION_X.getParam()
-                + " " + (1024*16-20);
-
-        EncogAgent.FitnessFunction ff = (info) -> info.levelLength - info.distancePassedCells;
-
-        NEATMarioEvolver neat1 = new NEATMarioEvolver(neatParams,
-                () -> new StandardHoldStrat(), sb, "neat");
-        neat1.setSimOptions(options1);
-
-        NEATMarioEvolver neat2 = new NEATMarioEvolver(neatPhasedParams,
-                () -> new StandardHoldStrat(), sb, "phased-static", ff);
-        neat2.setSimOptions(options2);
-
-        NEATMarioEvolver neat3 = new GreenPhasedSearchEvolver(neatPhasedParams,
-                 new EnvEnemyGrid(), sb, "phased-green", ff);
-        neat3.setSimOptions(options2);
-
-        NEATMarioEvolver neat4 = new SandpilePhasedSearchEvolver(neatPhasedParams,
-                new EnvEnemyGrid(), sb, "phased-green-sandpile", ff);
-        neat4.setSimOptions(options2);
-
-
-        NEATReuseMarioEvolver evolver = new NEATReuseMarioEvolver(new NEATMarioEvolver[] { neat1, neat2 });
-        evolver.run();
-
-        NEATReuseMarioEvolver evolver2 = new NEATReuseMarioEvolver(new NEATMarioEvolver[] { neat1, neat3 });
-        evolver2.run();
-
-        NEATReuseMarioEvolver evolver3 = new NEATReuseMarioEvolver(new NEATMarioEvolver[] { neat1, neat4 });
-        evolver3.run();
-
-        writeToFile(sb.toString());
-    }
-
-    private void runCoins() {
-        NEATParameters neatParams = new NEATParameters();
-        neatParams.MAX_GENERATIONS = 500;
-
-        // initialise parameters
-        NEATParameters neatPhasedParams = new NEATParameters();
-        neatPhasedParams.MAX_GENERATIONS = 500;
-        neatPhasedParams.PHASED_SEARCH = true;
-
-        StringBuilder sb = new StringBuilder();
-        int seed1 = 0;
-
-        String options1 = levels[3].concat(FastOpts.L_RANDOM_SEED(seed1));
-//        String options2 = levels[2].concat(FastOpts.L_RANDOM_SEED(seed2));
-
-        String options2 = options1.replace(FastOpts.L_ENEMY(Enemy.SPIKY_WINGED), "") + FastOpts.L_COINS_ON;
-
-        EncogAgent.FitnessFunction ff = (info) -> info.coinsGained;
-
-        NEATMarioEvolver neat1 = new NEATMarioEvolver(neatParams,
-                () -> new StandardHoldStrat(), sb, "neat");
-        neat1.setSimOptions(options1);
-
-        NEATMarioEvolver neat2 = new NEATMarioEvolver(neatPhasedParams,
-                () -> new StandardHoldStrat(), sb, "phased-static", ff, new CoinEnvEnemyGrid());
-        neat2.setSimOptions(options2);
-
-        NEATMarioEvolver neat3 = new GreenPhasedSearchEvolver(neatPhasedParams,
-                new CoinEnvEnemyGrid(), sb, "phased-green", ff);
-        neat3.setSimOptions(options2);
-
-        NEATMarioEvolver neat4 = new SandpilePhasedSearchEvolver(neatPhasedParams,
-                new CoinEnvEnemyGrid(), sb, "phased-green-sandpile", ff);
-        neat4.setSimOptions(options2);
-
-        NEATReuseMarioEvolver evolver = new NEATReuseMarioEvolver(new NEATMarioEvolver[] { neat1, neat2 });
-        evolver.run();
-
-        NEATReuseMarioEvolver evolver2 = new NEATReuseMarioEvolver(new NEATMarioEvolver[] { neat1, neat3 });
-        evolver2.run();
-
-        NEATReuseMarioEvolver evolver3 = new NEATReuseMarioEvolver(new NEATMarioEvolver[] { neat1, neat4 });
-        evolver3.run();
-
-        writeToFile(sb.toString());
-    }
-
 
     // ----- for testing ------
     private Point[] extractFeatures(NEATNetwork network) {

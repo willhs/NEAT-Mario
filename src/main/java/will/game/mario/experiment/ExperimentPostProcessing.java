@@ -9,6 +9,8 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by Will on 16/10/2016.
@@ -17,67 +19,85 @@ public class ExperimentPostProcessing {
 
     private static final int LEVELS = 5;
 
-    private static String ROOT_RESULTS_DIR = "/vol/grid-solar/sgeusers/hardwiwill/results/mario/jan25/mario-mm-neat-sandpile-2946517/extracted/";
-    private static String EXPERIMENT_NAME = "both-100";
+    private static String ROOT_RESULTS_DIR = "grid_results/transfer/29th/safe";
+    private static String EXPERIMENT_NAME = "";
     private static String EXPERIMENT_DIR = EXPERIMENT_NAME + "/train/";
 
     private static String ROOT_OUTPUT_DIR = ROOT_RESULTS_DIR + "averaged/train/";
     private static String OUTPUT_FILENAME = EXPERIMENT_NAME + ".csv";
 
     public static void main(String[] args) throws Exception {
-        Tuple[] averagedResults = averageResults(
-                Arrays.stream(new File(ROOT_RESULTS_DIR + EXPERIMENT_DIR).listFiles())
-                    .filter(file -> !file.isDirectory())
-                    .toArray(s -> new File[s])
-        );
+        Files.newDirectoryStream(Paths.get(ROOT_RESULTS_DIR))
+                .forEach(expPath -> {
+                    try {
+                        createAverageFiles(expPath);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+//        Path path = Paths.get("grid_results/transfer/neat-transfer-2947384");
+//        createAverageFiles(path);
+    }
+
+    private static void createAverageFiles(Path rootExperimentPath) throws Exception {
+        Files.newDirectoryStream(rootExperimentPath)
+                .forEach(p -> {
+                    try {
+                        createAverageFile(p, Paths.get(p.toString() + "/averaged/averaged.csv"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    private static void createAverageFile(Path experimentDir, Path outputPath) throws Exception {
+        List<Path> experiments = StreamSupport.stream(Files.newDirectoryStream(experimentDir).spliterator(), false)
+                .filter(p -> !Files.isDirectory(p))
+                .collect(Collectors.toList());
+
+        Tuple[] averagedResults = averageResults(experiments.stream());
         Arrays.stream(averagedResults).forEach(System.out::println);
 
         // csv the results
         List<String> resultsCSV = new ArrayList<>(Arrays.asList(
-                "Generation,Fitness,Average Connections,Best Connections,Average Neurons,Best Neurons"));
+                "Fitness"
+//                        + ",Average Connections,Best Connections,Average Neurons,Best Neurons"
+         ));
 
         resultsCSV.addAll(Arrays.stream(averagedResults)
                 .map(t -> {
                     // tuple in csv format
-                    return t.gen + "," + t.fitness + "," +
-                            t.aveConns + "," + t.bestConns + "," +
-                            t.aveNeurons + "," + t.bestNeurons;
+                    return t.fitness + ""
+//                            + "," + t.aveConns + "," + t.bestConns + "," +
+//                            + t.aveNeurons + "," + t.bestNeurons
+                    ;
                 }).collect(Collectors.toList()));
 
         // write the results to file
-        Path path = Paths.get(ROOT_OUTPUT_DIR + OUTPUT_FILENAME);
-        Files.createDirectories(path.getParent());
+        Files.createDirectories(outputPath.getParent());
 
-        Files.write(path, resultsCSV);
+        Files.write(outputPath, resultsCSV);
     }
 
-    private static Tuple[] averageResults(File[] files) throws Exception {
-        Tuple[] allTuples = Arrays.stream(files)
-                .flatMap(file -> {
+    private static Tuple[] averageResults(Stream<Path> paths) throws Exception {
+        Tuple[] allTuples = paths.flatMap(path -> {
                     Scanner scan = null;
                     try {
-                        scan = new Scanner(file);
+                        scan = new Scanner(path.toFile());
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-//                    scan.nextLine(); // skip header
+
+//                    scan.nextLine(); // skip header (for MarioEvolver files)
 
                     List<Tuple> tuples = new ArrayList<>();
+                    int gen = 0;
                     while (scan.hasNext()) {
-                        String[] parts = scan.nextLine().split("\t");
+                        String[] parts = scan.nextLine().split(",");
                         try {
-                            tuples.add(new Tuple(
-                                    Integer.parseInt(parts[0]),
-                                    Double.parseDouble(parts[3])
-                            ));
-/*                            if (parts.length == 2) {
+                            if (parts.length == 8) {
                                 tuples.add(new Tuple(
-                                        Integer.parseInt(parts[0]),
-                                        Double.parseDouble(parts[1])
-                                ));
-                            } else if (parts.length == 7) {
-                                tuples.add(new Tuple(
-                                        Integer.parseInt(parts[1]),
+                                        gen,
                                         Double.parseDouble(parts[2]),
                                         Double.parseDouble(parts[3]),
                                         Double.parseDouble(parts[4]),
@@ -87,7 +107,8 @@ public class ExperimentPostProcessing {
                                 ));
                             } else {
                                 throw new RuntimeException("Tuple has weird number of elements");
-                            }*/
+                            }
+                            gen++;
                         } catch (Exception e) {
                             System.err.println("malformed tuple");
                             e.printStackTrace();
@@ -138,7 +159,7 @@ public class ExperimentPostProcessing {
 
     private static class TupleAverager implements Consumer<Tuple>
     {
-        private final int GENS = 1001;
+        private final int GENS = 2000;
         private int[] count = new int[GENS];
 
         private List<Double> fitnessTotal = new ArrayList<>(Collections.nCopies(GENS, 0.0));

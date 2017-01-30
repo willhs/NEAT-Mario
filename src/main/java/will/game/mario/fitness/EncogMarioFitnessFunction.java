@@ -31,6 +31,11 @@ public class EncogMarioFitnessFunction extends AbstractMarioFitnessFunction<NEAT
         this.agentFactory = agentFactory;
     }
 
+    public EncogMarioFitnessFunction(String marioOptions, boolean headless, AgentFactory agentFactory, int seed) {
+        super(marioOptions, headless, seed);
+        this.agentFactory = agentFactory;
+    }
+
     public EncogMarioFitnessFunction(boolean headless) {
         super(headless);
     }

@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import will.game.mario.experiment.evolve.MultiPopNEATMarioEvolver;
 import will.game.mario.fitness.AbstractMarioFitnessFunction;
 import will.game.mario.params.NEATEnsembleParams;
 import will.neat.encog.gui.HyperNEATGUI;
@@ -50,13 +49,13 @@ public class NEATEvolverGUI extends Application {
 
         NEATParameters params = new NEATEnsembleParams();
 
-/*        // define neat
-        MultiPopNEATMarioEvolver evolver = new MultiPopNEATMarioEvolver(params, () -> new StandardHoldStrat());
+        // define neat
+        NEATMarioEvolver evolver = new NEATMarioEvolver(params, () -> new StandardHoldStrat());
         String simOptions = AbstractMarioFitnessFunction.DEFAULT_SIM_OPTIONS
                 .replace(AbstractMarioFitnessFunction.LEVEL,
-                        FastOpts.LEVEL_08_FLY_SPIKY
+                        FastOpts.FLAT_FLY_SPIKEYS
                 );
-        evolver.setSimOptions(simOptions);*/
+        evolver.setSimOptions(simOptions);
 
         Task<Void> evolve = new Task<Void>() {
             @Override

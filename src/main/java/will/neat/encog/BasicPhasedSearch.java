@@ -33,7 +33,7 @@ public class BasicPhasedSearch extends AbstractPhasedSearch {
             return;
         }
         // switch if the right num of generations has gone by
-        if (train.getIteration() % phaseBLength == 0) {
+        if (train.getIteration() % phaseALength == 0) {
             switchPhase();
         }
 

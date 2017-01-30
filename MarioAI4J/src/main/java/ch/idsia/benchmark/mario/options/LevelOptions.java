@@ -15,7 +15,7 @@ public class LevelOptions {
 	 * Currently do not do anything, reserved for future use.
 	 */
 	public static void reset() {
-		if (isFlat()) {
+/*		if (isFlat()) {
 			MarioOptions.getInstance().setBool(MarioOptions.BoolOption.LEVEL_BLOCKS, false);
 			MarioOptions.getInstance().setBool(MarioOptions.BoolOption.LEVEL_COINS, false);
 			MarioOptions.getInstance().setBool(MarioOptions.BoolOption.LEVEL_TUBES, false);
@@ -23,7 +23,7 @@ public class LevelOptions {
 			MarioOptions.getInstance().setBool(MarioOptions.BoolOption.LEVEL_DEAD_ENDS, false);
 			MarioOptions.getInstance().setBool(MarioOptions.BoolOption.LEVEL_CANNONS, false);
 			MarioOptions.getInstance().setString(MarioOptions.StringOption.LEVEL_CREATURES, "off");
-		}
+		}*/
 	}
 		
 	public static boolean isLadders() {

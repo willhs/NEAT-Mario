@@ -5,6 +5,7 @@ import ch.idsia.benchmark.mario.options.FastOpts;
 import ch.idsia.benchmark.mario.options.MarioOptions;
 import will.game.mario.agent.MarioNEATAgent;
 
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -19,7 +20,7 @@ public abstract class AbstractMarioFitnessFunction<N> {
     public static final String TIME_LIMIT = " " + MarioOptions.IntOption.SIMULATION_TIME_LIMIT.getParam() + " 120";
     public static final String DIFFICULTY = FastOpts.L_DIFFICULTY(0);
     public static final String MARIO_TYPE = FastOpts.S_MARIO_SMALL;
-    public static final String LEVEL_LENGTH = FastOpts.L_LENGTH_1024;
+    public static final String LEVEL_LENGTH = FastOpts.L_LENGTH_512;
 
     public static final String RECEPTIVE_FIELD_WIDTH = " " + MarioOptions.IntOption.AI_RECEPTIVE_FIELD_WIDTH.getParam() + " 13";
     public static final String RECEPTIVE_FIELD_HEIGHT = " " + MarioOptions.IntOption.AI_RECEPTIVE_FIELD_HEIGHT.getParam() + " 13";
@@ -42,15 +43,26 @@ public abstract class AbstractMarioFitnessFunction<N> {
 
     private String simOptions = DEFAULT_SIM_OPTIONS;
 
-    protected final int TRIALS = 1;
+    protected final int TRIALS = 5;
 
     // public static for lazy reasons
     public static boolean headless = false;
 
     protected double bestFitness = 0;
 
+    private int seed = 0;
+
     public AbstractMarioFitnessFunction(String simOptions, boolean headless) {
         this.simOptions = simOptions;
+        this.headless = headless;
+        if (headless) {
+            disableLogging();
+        }
+    }
+
+    public AbstractMarioFitnessFunction(String simOptions, boolean headless, int seed) {
+        this.simOptions = simOptions;
+        this.seed = seed;
         this.headless = headless;
         if (headless) {
             disableLogging();
@@ -74,10 +86,10 @@ public abstract class AbstractMarioFitnessFunction<N> {
     protected double evaluate(MarioNEATAgent agent, N nn, Logger logger) {
         double fitnessSum = 0;
 
+        Random random = new Random(seed);
+
         for (int t = 0; t < TRIALS; t++) {
-            // do trial with new random seed
-            int seed = 1;
-//            int seed = new Random().nextInt();
+            int seed = random.nextInt();
             String simOptions = getSimOptions(seed);
 
             float trialFitness = playMario(agent, simOptions);

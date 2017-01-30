@@ -5,6 +5,7 @@ import org.encog.ml.ea.opp.OperationList;
 import org.encog.ml.ea.train.basic.TrainEA;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.Strategy;
+import org.encog.util.obj.ObjectHolder;
 
 /**
  * Created by hardwiwill on 25/01/17.
@@ -12,8 +13,9 @@ import org.encog.ml.train.strategy.Strategy;
 public abstract class AbstractPhasedSearch implements Strategy {
 
     protected TrainEA train;
-    protected enum Phase { COMPLEXIFICATION, SIMPLIFICATION }
-    protected Phase phase = Phase.COMPLEXIFICATION;
+
+    public enum Phase { COMPLEXIFICATION, SIMPLIFICATION }
+    protected Phase phase = Phase.SIMPLIFICATION;
 
     // last generation switch
     protected int lastTransitionGeneration = 0;
@@ -34,9 +36,17 @@ public abstract class AbstractPhasedSearch implements Strategy {
     @Override
     public void init(MLTrain train) {
         this.train = (TrainEA) train;
+
+        for (OperationList list : phaseOps) {
+            for (ObjectHolder<EvolutionaryOperator> op : list.getList()) {
+                op.getObj().init(this.train);
+            }
+        }
+
+        addOps();
     }
 
-    public void finalizeOps() {
+    private void addOps() {
         // add ops of the current phase
         this.train.getOperators().getList().addAll(phaseOps[phase.ordinal()].getList());
 
@@ -60,15 +70,15 @@ public abstract class AbstractPhasedSearch implements Strategy {
                 )
         );
 
-        // add ops of the current phase
-        train.getOperators().getList().addAll(phaseOps[phase.ordinal()].getList());
-
-        // finalize (make probabilities add to 1)
-        train.getOperators().finalizeStructure();
+        addOps();
 
         lastTransitionGeneration = train.getIteration();
 
 //        System.out.println("Phase changed to : " + phase);
 //        System.out.println("operators: " + train.getOperators().getList());
+    }
+
+    public void setPhase(Phase phase) {
+        this.phase = phase;
     }
 }

@@ -29,6 +29,6 @@ public class EnsembleMAddNeuron extends EnsembleAddNeuron {
                         ? ensemble.getAnns()[whichAnn]
                         : ensemble.getMaster();
 
-        performOperation(targetAnn);
+        performOperation(targetAnn, rnd);
     }
 }

@@ -4,7 +4,6 @@ import ch.idsia.agents.AgentOptions;
 import ch.idsia.agents.IAgent;
 import ch.idsia.agents.controllers.MarioHijackAIBase;
 import ch.idsia.benchmark.mario.MarioSimulator;
-import ch.idsia.benchmark.mario.engine.generalization.Enemy;
 import ch.idsia.benchmark.mario.engine.input.MarioInput;
 import ch.idsia.benchmark.mario.engine.sprites.Mario;
 import ch.idsia.benchmark.mario.options.FastOpts;
@@ -30,11 +29,11 @@ public class ManualAgent extends MarioHijackAIBase implements IAgent {
 
 	public MarioInput actionSelectionAI() {
 
-//		int fitness = info.distancePassedCells;
+		int fitness = info.distancePassedCells - info.timeSpent;
 //				- (info.timeSpent/10)
 //				+ info.killsTotal * 5;
 
-		int fitness = info.levelLength - info.distancePassedCells;
+//		int fitness = info.levelLength - info.distancePassedCells;
 
 		System.out.println(fitness);
 
@@ -46,16 +45,24 @@ public class ManualAgent extends MarioHijackAIBase implements IAgent {
 		while (true) {
 			String options = DEFAULT_SIM_OPTIONS
 					.replace(FastOpts.VIS_OFF, FastOpts.VIS_ON_2X)
-					.replace(LEVEL, FastOpts.LEVEL_06_GOOMBA)
+//					.replace(LEVEL, FastOpts.COINS)
+					.replace(LEVEL, FastOpts.FLAT_KOOPAS)
+                    .replace(TIME_LIMIT, " " + MarioOptions.IntOption.SIMULATION_TIME_LIMIT.getParam() + " 120")
                     .replace(LEVEL_LENGTH, FastOpts.L_LENGTH_512)
-                    .replace(DIFFICULTY, FastOpts.L_DIFFICULTY(2))
-					.replace(FastOpts.L_ENEMY(Enemy.GOOMBA), "")
+                    .replace(DIFFICULTY, FastOpts.L_DIFFICULTY(1))
+//					.replace(FastOpts.L_ENEMY(Enemy.GOOMBA), "")
 					+ FastOpts.L_COINS_ON
-//					+ FastOpts.VIS_FIELD(SimulatorOptions.ReceptiveFieldMode.GRID_ENTITIES)
-//					+ FastOpts.S_MARIO_LARGE
+//					+ FastOpts.VIS_FIELD(SimulatorOptions.ReceptiveFieldMode.GRID_TILES)
+//					+ FastOpts.S_MARIO_FIRE
                     + FastOpts.S_MARIO_INVULNERABLE
-					+ FastOpts.L_RANDOM_SEED(0)
+//					+ FastOpts.L_RANDOM_SEED(0)
+//                    + FastOpts.L_ENEMY(Enemy.GOOMBA)
+//                    + FastOpts.L_CANNONS_ON
 //                    + " " + MarioOptions.IntOption.LEVEL_MARIO_INITIAL_POSITION_X.getParam() + " " + (512*16-20)
+//                    + " " + MarioOptions.FloatOption.SIMULATION_MARIO_JUMP_POWER.getParam() + " " + (3)
+//					+ " " + MarioOptions.FloatOption.SIMULATION_GRAVITY_CREATURES.getParam() + " " + (0.5)
+//					+ " " + MarioOptions.FloatOption.SIMULATION_GRAVITY_MARIO.getParam() + " " + (0.5)
+//					+ " " + MarioOptions.FloatOption.SIMULATION_WIND_MARIO.getParam() + " " + (1.1)
 					;
 
 			MarioSimulator simulator = new MarioSimulator(options);

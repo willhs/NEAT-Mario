@@ -16,6 +16,7 @@ import org.encog.neural.neat.training.species.OriginalNEATSpeciation;
 import will.game.mario.agent.factory.AgentFactory;
 import will.game.mario.agent.encog.EncogAgent;
 import will.game.mario.fitness.EncogMarioFitnessFunction;
+import will.game.mario.params.PhasedParameters;
 import will.game.mario.rf.action.StandardHoldStrat;
 import will.game.mario.rf.environment.EnvEnemyGrid;
 import will.game.mario.rf.environment.GameEnvironment;
@@ -74,6 +75,15 @@ public class NEATMarioEvolver {
         this.params = params;
         this.stratFactory = actionStratFactory;
         this.printOutput = true;
+    }
+
+    public NEATMarioEvolver(NEATParameters params, String simOptions, GameEnvironment env, StringBuilder output, String name, EncogAgent.FitnessFunction ff, int seed) {
+        this.params = params;
+        this.simOptions = simOptions;
+        this.env = env;
+        this.output = output;
+        this.name = name;
+        this.ff = ff;
     }
 
     public TrainEA run() {
@@ -138,7 +148,10 @@ public class NEATMarioEvolver {
         if (params.PHASED_SEARCH) {
             BasicPhasedSearch phasedSearch = new BasicPhasedSearch(
                     params.PHASE_A_LENGTH, params.PHASE_B_LENGTH);
-            neat.addStrategy(phasedSearch);
+
+            if (params instanceof PhasedParameters) {
+                phasedSearch.setPhase(((PhasedParameters)params).STARTING_PHASE);
+            }
 
             // additive mutations
             phasedSearch.addPhaseOp(0, params.ADD_CONN_PROB, new NEATMutateAddLink());
@@ -147,6 +160,9 @@ public class NEATMarioEvolver {
             // subtractive mutations
             phasedSearch.addPhaseOp(1, params.REMOVE_CONN_PROB, new NEATMutateRemoveLink());
             phasedSearch.addPhaseOp(1, params.REMOVE_NEURON_PROB, new NEATMutateRemoveNeuron());
+
+            neat.addStrategy(phasedSearch);
+
         } else { // blended search
             neat.addOperation(params.ADD_CONN_PROB, new NEATMutateAddLink());
             neat.addOperation(params.ADD_NEURON_PROB, new NEATMutateAddNeuron());

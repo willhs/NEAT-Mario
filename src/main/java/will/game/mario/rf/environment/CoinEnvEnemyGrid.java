@@ -22,9 +22,7 @@ public class CoinEnvEnemyGrid extends EnvEnemyGrid {
                     return Arrays.stream(tileRow)
                             .map(tile -> {
                                 // return 1 if it anything BUT a coin
-                                return tile == Tile.NOTHING ? 0
-                                        : tile == Tile.COIN_ANIM ? -1
-                                        : 1;
+                                return tile == Tile.COIN_ANIM ? 1 : 0;
                             });
                 })
                 .mapToDouble(i->i)

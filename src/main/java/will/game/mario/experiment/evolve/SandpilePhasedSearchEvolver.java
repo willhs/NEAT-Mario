@@ -70,7 +70,6 @@ public class SandpilePhasedSearchEvolver extends NEATMarioEvolver {
         // phased search (each phase has unique set of mutations)
         GreenPhasedSearch phasedSearch = new GreenPhasedSearch(
                 params.PHASE_A_LENGTH, params.PHASE_B_LENGTH, 70);
-        neat.addStrategy(phasedSearch);
 
         // additive mutations
         phasedSearch.addPhaseOp(0, params.ADD_CONN_PROB, new NEATMutateAddLink());
@@ -79,7 +78,8 @@ public class SandpilePhasedSearchEvolver extends NEATMarioEvolver {
         // subtractive mutations
         phasedSearch.addPhaseOp(1, params.REMOVE_CONN_PROB, new DeleteLinkSandpileMutate(1));
         phasedSearch.addPhaseOp(1, params.REMOVE_NEURON_PROB, new DeleteNeuronSandpileMutate(1));
-        phasedSearch.finalizeOps();
+
+        neat.addStrategy(phasedSearch);
 
         neat.getOperators().finalizeStructure();
 

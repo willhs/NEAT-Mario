@@ -27,6 +27,6 @@ public class EnsembleMRemoveNeuron extends EnsembleRemoveNeuron {
         final int whichAnn = rnd.nextInt(ensemble.getNumAnns());
         final SingleNEATGenome targetAnn = ensemble.getAnns()[whichAnn];
 
-        performOperation(targetAnn);
+        performOperation(targetAnn, rnd);
     }
 }

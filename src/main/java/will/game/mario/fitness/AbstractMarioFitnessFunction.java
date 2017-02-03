@@ -43,7 +43,7 @@ public abstract class AbstractMarioFitnessFunction<N> {
 
     private String simOptions = DEFAULT_SIM_OPTIONS;
 
-    protected final int TRIALS = 5;
+    protected final int TRIALS = 1;
 
     // public static for lazy reasons
     public static boolean headless = false;

@@ -28,7 +28,7 @@ public class DeleteLinkSandpileMutate extends NEATMutation {
     private void performOperation(SingleNEATGenome target, Random rnd) {
         NEATLinkGene targetLink = (NEATLinkGene) chooseGeneSandpile(new ArrayList<>(target.getLinksChromosome()), rnd);
 
-        target.getLinksChromosome().remove(targetLink);
+        removeLink(target, targetLink);
 
         // if this orphaned any nodes, then kill them too!
         if (!isNeuronNeeded(target, targetLink.getFromNeuronID())) {

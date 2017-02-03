@@ -26,6 +26,8 @@ public class NEATReuseMarioEvolver {
             neat.setPopulation(population);
             evolvers[i].run(neat);
             population = neat.getPopulation();
+
+            // reset the population
             population.getSpecies().stream()
                     .flatMap(s -> s.getMembers().stream())
                     .forEach(m -> m.setScore(0));

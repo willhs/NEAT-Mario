@@ -29,7 +29,7 @@ public class ManualAgent extends MarioHijackAIBase implements IAgent {
 
 	public MarioInput actionSelectionAI() {
 
-		int fitness = info.distancePassedCells - info.timeSpent;
+		int fitness = (info.distancePassedCells - info.timeSpent) + (info.coinsGained * 5);
 //				- (info.timeSpent/10)
 //				+ info.killsTotal * 5;
 
@@ -46,10 +46,10 @@ public class ManualAgent extends MarioHijackAIBase implements IAgent {
 			String options = DEFAULT_SIM_OPTIONS
 					.replace(FastOpts.VIS_OFF, FastOpts.VIS_ON_2X)
 //					.replace(LEVEL, FastOpts.COINS)
-					.replace(LEVEL, FastOpts.FLAT_KOOPAS)
+					.replace(LEVEL, FastOpts.FLAT_GOOMBAS)
                     .replace(TIME_LIMIT, " " + MarioOptions.IntOption.SIMULATION_TIME_LIMIT.getParam() + " 120")
                     .replace(LEVEL_LENGTH, FastOpts.L_LENGTH_512)
-                    .replace(DIFFICULTY, FastOpts.L_DIFFICULTY(1))
+                    .replace(DIFFICULTY, FastOpts.L_DIFFICULTY(0))
 //					.replace(FastOpts.L_ENEMY(Enemy.GOOMBA), "")
 					+ FastOpts.L_COINS_ON
 //					+ FastOpts.VIS_FIELD(SimulatorOptions.ReceptiveFieldMode.GRID_TILES)

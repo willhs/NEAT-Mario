@@ -25,9 +25,9 @@ import will.neat.encog.MutatePerturbOrResetLinkWeight;
  * Created by Will on 26/01/2017.
  */
 public class SandpilePhasedSearchEvolver extends NEATMarioEvolver {
-    public SandpilePhasedSearchEvolver(NEATParameters params, GameEnvironment env, StringBuilder output, String name, EncogAgent.FitnessFunction ff) {
-        super(params, env, output, name);
-        this.ff = ff;
+    public SandpilePhasedSearchEvolver(NEATParameters params, String simOptions, GameEnvironment env,
+                                       StringBuilder output, String name, EncogAgent.FitnessFunction ff, int seed) {
+        super(params, simOptions, env, output, name, ff, seed);
     }
 
     @Override

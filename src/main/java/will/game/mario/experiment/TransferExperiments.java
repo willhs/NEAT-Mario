@@ -11,7 +11,7 @@ import will.game.mario.fitness.AbstractMarioFitnessFunction;
 import will.game.mario.params.NEATParameters;
 import will.game.mario.params.PhasedParameters;
 import will.game.mario.rf.environment.EnvEnemyGrid;
-import will.game.mario.rf.environment.CoinEnvEnemyGrid;
+import will.game.mario.rf.environment.CoinEnemyEnemyGrid;
 import will.game.mario.rf.environment.GameEnvironment;
 import will.neat.encog.AbstractPhasedSearch;
 
@@ -21,14 +21,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
-import static will.game.mario.experiment.CECExperiments.Task.A;
-import static will.game.mario.experiment.CECExperiments.Task.BOTH;
+import static will.game.mario.experiment.TransferExperiments.Task.A;
+import static will.game.mario.experiment.TransferExperiments.Task.B;
+import static will.game.mario.experiment.TransferExperiments.Task.BOTH;
 import static will.game.mario.fitness.AbstractMarioFitnessFunction.*;
 
 /**
  * Created by Will on 8/10/2016.
  */
-public class CECExperiments {
+public class TransferExperiments {
 
     public enum Task { A, B, BOTH }
 
@@ -49,7 +50,6 @@ public class CECExperiments {
 
     private boolean writeFile = true;
 
-    public static final String REVERSE = "reverse";
     public static final String COINS = "coins";
 
     private String experimentName;
@@ -66,7 +66,7 @@ public class CECExperiments {
     private static int TRANSFER_EVOLVER = 0;
     private static Task RUN_TYPE = BOTH;
 
-    public CECExperiments(String name) {
+    public TransferExperiments(String name) {
         this.experimentName = name;
     }
 
@@ -107,7 +107,7 @@ public class CECExperiments {
             SEED = Integer.parseInt(args[9]);
         }
 
-        CECExperiments ex = new CECExperiments(level);
+        TransferExperiments ex = new TransferExperiments(level);
 //        ex.run();
 
         ex.runExperiment(level);
@@ -116,9 +116,7 @@ public class CECExperiments {
     private void runExperiment(String level) {
         StringBuilder sb = new StringBuilder();
 
-        if (level.equals(REVERSE)) {
-            runReverse();
-        } else if (level.equals(COINS)) {
+        if (level.equals(COINS)) {
             runCoins(sb);
         } else if (level.equals("kills")) {
             runKills(sb);
@@ -128,37 +126,9 @@ public class CECExperiments {
             runGoomba2Winged(sb);
         } else if (level.equals("speed-kills")) {
             runSpeedKills(sb);
-        } else if (level.equals("dist-coins")) {
+        } else if (level.equals("speed-coins")) {
             runSpeedCoins(sb);
         }
-
-        if (writeFile) {
-            writeToFile(sb.toString());
-        }
-    }
-
-    private void runReverse() {
-        StringBuilder sb = new StringBuilder();
-
-        NEATParameters neatParams = new NEATParameters();
-        neatParams.MAX_GENERATIONS = TASK_A_GENS;
-
-        // initialise parameters
-        NEATParameters neatPhasedParams = new NEATParameters();
-        neatPhasedParams.MAX_GENERATIONS = TASK_A_GENS;
-        neatPhasedParams.PHASED_SEARCH = true;
-
-        int seed1 = 0;
-
-        String options1 = levels[1].concat(FastOpts.L_RANDOM_SEED(seed1));
-//        String options2 = levels[2].concat(FastOpts.L_RANDOM_SEED(seed2));
-
-        String options2 = levels[1]
-                + " " + MarioOptions.IntOption.LEVEL_MARIO_INITIAL_POSITION_X.getParam()
-                + " " + (1024*16-20);
-
-        EncogAgent.FitnessFunction ff = (info) -> info.levelLength - info.distancePassedCells;
-
 
         if (writeFile) {
             writeToFile(sb.toString());
@@ -187,8 +157,8 @@ public class CECExperiments {
         EncogAgent.FitnessFunction baseFF = (info) -> info.distancePassedCells;
         EncogAgent.FitnessFunction transferFF = (info) -> info.coinsGained;
 
-        NEATMarioEvolver[] baseEvolvers = getCECEvolvers(output, baseFF, new EnvEnemyGrid(), baseOpts, A);
-        NEATMarioEvolver[] transferEvolvers = getCECEvolvers(output, transferFF, new CoinEnvEnemyGrid(), transferOpts, A);
+        NEATMarioEvolver[] baseEvolvers = getEvolvers(output, baseFF, new EnvEnemyGrid(), baseOpts, A);
+        NEATMarioEvolver[] transferEvolvers = getEvolvers(output, transferFF, new CoinEnemyEnemyGrid(), transferOpts, B);
 
         runTransferLearningExperiment(baseEvolvers, transferEvolvers);
 //        runTransferLearningExperiment(baseEvolver, transferEvolvers[0]);
@@ -230,8 +200,8 @@ public class CECExperiments {
         EncogAgent.FitnessFunction baseFF = (info) -> info.killsTotal;
         EncogAgent.FitnessFunction transferFF = (info) -> info.killsByStomp;
 
-        NEATMarioEvolver[] baseEvolvers = getCECEvolvers(output, baseFF, new EnvEnemyGrid(), baseOpts, A);
-        NEATMarioEvolver[] transferEvolvers = getCECEvolvers(output, transferFF, new EnvEnemyGrid(), transferOpts, A);
+        NEATMarioEvolver[] baseEvolvers = getEvolvers(output, baseFF, new EnvEnemyGrid(), baseOpts, A);
+        NEATMarioEvolver[] transferEvolvers = getEvolvers(output, transferFF, new EnvEnemyGrid(), transferOpts, B);
 
         runTransferLearningExperiment(baseEvolvers, transferEvolvers);
 //        runTransferLearningExperiment(baseEvolver, transferEvolvers[0]);
@@ -272,8 +242,8 @@ public class CECExperiments {
         EncogAgent.FitnessFunction baseFF = (info) -> info.distancePassedCells - info.timeSpent;
         EncogAgent.FitnessFunction transferFF = (info) -> info.distancePassedCells - info.timeSpent;
 
-        NEATMarioEvolver[] baseEvolvers = getCECEvolvers(output, baseFF, new EnvEnemyGrid(), baseOpts, A);
-        NEATMarioEvolver[] transferEvolvers = getCECEvolvers(output, transferFF, new EnvEnemyGrid(), transferOpts, A);
+        NEATMarioEvolver[] baseEvolvers = getEvolvers(output, baseFF, new EnvEnemyGrid(), baseOpts, A);
+        NEATMarioEvolver[] transferEvolvers = getEvolvers(output, transferFF, new EnvEnemyGrid(), transferOpts, B);
 
         runTransferLearningExperiment(baseEvolvers, transferEvolvers);
 //        runTransferLearningExperiment(baseEvolver, transferEvolvers[0]);
@@ -313,8 +283,8 @@ public class CECExperiments {
         EncogAgent.FitnessFunction baseFF = (info) -> info.distancePassedCells - info.timeSpent;
         EncogAgent.FitnessFunction transferFF = (info) -> info.distancePassedCells - info.timeSpent;
 
-        NEATMarioEvolver[] baseEvolvers = getCECEvolvers(output, baseFF, new EnvEnemyGrid(), baseOpts, A);
-        NEATMarioEvolver[] transferEvolvers = getCECEvolvers(output, transferFF, new EnvEnemyGrid(), transferOpts, A);
+        NEATMarioEvolver[] baseEvolvers = getEvolvers(output, baseFF, new EnvEnemyGrid(), baseOpts, A);
+        NEATMarioEvolver[] transferEvolvers = getEvolvers(output, transferFF, new EnvEnemyGrid(), transferOpts, B);
 
         runTransferLearningExperiment(baseEvolvers, transferEvolvers);
 //        runTransferLearningExperiment(baseEvolvers[2], transferEvolvers[0]);
@@ -357,8 +327,8 @@ public class CECExperiments {
         EncogAgent.FitnessFunction baseFF = (info) -> info.distancePassedCells - info.timeSpent;
         EncogAgent.FitnessFunction transferFF = (info) -> (info.distancePassedCells - info.timeSpent) + (info.killsTotal * 5);
 
-        NEATMarioEvolver[] baseEvolvers = getCECEvolvers(output, baseFF, new EnvEnemyGrid(), baseOpts, A);
-        NEATMarioEvolver[] transferEvolvers = getCECEvolvers(output, transferFF, new EnvEnemyGrid(), transferOpts, A);
+        NEATMarioEvolver[] baseEvolvers = getEvolvers(output, baseFF, new EnvEnemyGrid(), baseOpts, A);
+        NEATMarioEvolver[] transferEvolvers = getEvolvers(output, transferFF, new EnvEnemyGrid(), transferOpts, B);
 
         runTransferLearningExperiment(baseEvolvers, transferEvolvers);
 
@@ -397,8 +367,8 @@ public class CECExperiments {
         EncogAgent.FitnessFunction baseFF = (info) -> info.distancePassedCells - info.timeSpent;
         EncogAgent.FitnessFunction transferFF = (info) -> (info.distancePassedCells - info.timeSpent) + (info.coinsGained * 5);
 
-        NEATMarioEvolver[] baseEvolvers = getCECEvolvers(output, baseFF, new EnvEnemyGrid(), baseOpts, A);
-        NEATMarioEvolver[] transferEvolvers = getCECEvolvers(output, transferFF, new CoinEnvEnemyGrid(), transferOpts, A);
+        NEATMarioEvolver[] baseEvolvers = getEvolvers(output, baseFF, new EnvEnemyGrid(), baseOpts, A);
+        NEATMarioEvolver[] transferEvolvers = getEvolvers(output, transferFF, new CoinEnemyEnemyGrid(), transferOpts, B);
 
         runTransferLearningExperiment(baseEvolvers, transferEvolvers);
 //        runTransferLearningExperiment(baseEvolver, transferEvolvers[0]);
@@ -445,9 +415,10 @@ public class CECExperiments {
         return null;
     }
 
-    private NEATMarioEvolver[] getCECEvolvers(StringBuilder sb, EncogAgent.FitnessFunction ff,
-                                              GameEnvironment env, String simOptions, Task task) {
+    private NEATMarioEvolver[] getEvolvers(StringBuilder sb, EncogAgent.FitnessFunction ff,
+                                           GameEnvironment env, String simOptions, Task task) {
         int gens = task == A ? TASK_A_GENS : TASK_B_GENS;
+        int seed = task == A ? SEED : SEED * 2;
 
         NEATParameters neatParams = new NEATParameters();
         neatParams.MAX_GENERATIONS = gens;
@@ -468,22 +439,21 @@ public class CECExperiments {
 
 
         NEATMarioEvolver neat = new NEATMarioEvolver(neatParams,
-                simOptions, env, sb, "neat", ff, SEED);
+                simOptions, env, sb, "neat", ff, seed);
 
         NEATMarioEvolver blended = new NEATMarioEvolver(blendedParams,
-                simOptions, env, sb, "blended", ff, SEED);
+                simOptions, env, sb, "blended", ff, seed);
 
         NEATMarioEvolver phasedStatic = new NEATMarioEvolver(phasedParams,
-                simOptions, env, sb, "phased-static", ff, SEED);
+                simOptions, env, sb, "phased-static", ff, seed);
 
         NEATMarioEvolver phasedGreen = new GreenPhasedSearchEvolver(phasedParams,
-                simOptions, env, sb, "phased-green", ff, SEED);
+                simOptions, env, sb, "phased-green", ff, seed);
 
-/*        NEATMarioEvolver phasedSan = new SandpilePhasedSearchEvolver(phasedParams,
-                env, sb, "phased-green-sandpile", ff);
-        neat4.setSimOptions(simOptions);*/
+        NEATMarioEvolver phasedSandpile = new SandpilePhasedSearchEvolver(phasedParams,
+                simOptions, env, sb, "phased-green-sandpile", ff, seed);
 
-        return new NEATMarioEvolver[] {neat, blended, phasedStatic, phasedGreen};
+        return new NEATMarioEvolver[] {neat, blended, phasedStatic, phasedGreen, phasedSandpile};
     }
 
     private void runTransferLearningExperiment(NEATMarioEvolver start, NEATMarioEvolver next) {
@@ -504,7 +474,7 @@ public class CECExperiments {
             runTransferLearningExperiment(baseEvolver, transferEvolver);
         } else if (RUN_TYPE == Task.A) {
             baseEvolver.run();
-        } else if (RUN_TYPE == Task.B) {
+        } else if (RUN_TYPE == B) {
             transferEvolver.run();
         }
     }

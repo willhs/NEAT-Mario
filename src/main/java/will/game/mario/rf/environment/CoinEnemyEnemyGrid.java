@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * Created by Will on 25/01/2017.
  */
-public class CoinEnvEnemyGrid extends EnvEnemyGrid {
+public class CoinEnemyEnemyGrid extends EnvEnemyGrid {
 
     @Override
     public double[] asInputNeurons(IEnvironment environment, MarioInput lastInput) {

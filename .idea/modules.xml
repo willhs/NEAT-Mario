@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../MM-NEATv2/MM-NEAT.iml" filepath="$PROJECT_DIR$/../MM-NEATv2/MM-NEAT.iml" />
       <module fileurl="file://$PROJECT_DIR$/../MM-NEAT/MM-NEAT.iml" filepath="$PROJECT_DIR$/../MM-NEAT/MM-NEAT.iml" />
       <module fileurl="file://$PROJECT_DIR$/MarioAI4J/MarioAI4J.iml" filepath="$PROJECT_DIR$/MarioAI4J/MarioAI4J.iml" />
       <module fileurl="file://$PROJECT_DIR$/ModularNEAT.iml" filepath="$PROJECT_DIR$/ModularNEAT.iml" />
-      <module fileurl="file://$PROJECT_DIR$/encog-java-core/encog-core.iml" filepath="$PROJECT_DIR$/encog-java-core/encog-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/encog-java-core/encog-java-core.iml" filepath="$PROJECT_DIR$/encog-java-core/encog-java-core.iml" />
     </modules>
   </component>

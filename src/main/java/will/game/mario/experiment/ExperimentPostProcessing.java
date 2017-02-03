@@ -19,7 +19,7 @@ public class ExperimentPostProcessing {
 
     private static final int LEVELS = 5;
 
-    private static String ROOT_RESULTS_DIR = "grid_results/transfer/29th/safe";
+    private static String ROOT_RESULTS_DIR = "/vol/grid-solar/sgeusers/hardwiwill/results/mario/31st";
     private static String EXPERIMENT_NAME = "";
     private static String EXPERIMENT_DIR = EXPERIMENT_NAME + "/train/";
 
@@ -27,16 +27,17 @@ public class ExperimentPostProcessing {
     private static String OUTPUT_FILENAME = EXPERIMENT_NAME + ".csv";
 
     public static void main(String[] args) throws Exception {
-        Files.newDirectoryStream(Paths.get(ROOT_RESULTS_DIR))
+/*        Files.newDirectoryStream(Paths.get(ROOT_RESULTS_DIR))
                 .forEach(expPath -> {
                     try {
                         createAverageFiles(expPath);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                });
-//        Path path = Paths.get("grid_results/transfer/neat-transfer-2947384");
+                });*/
+        Path path = Paths.get("/vol/grid-solar/sgeusers/hardwiwill/results/mario/31st/speed-kills/speed-killsNN");
 //        createAverageFiles(path);
+        createAverageFile(path, Paths.get(path.toString() + "/averaged/averaged.csv"));
     }
 
     private static void createAverageFiles(Path rootExperimentPath) throws Exception {
@@ -110,7 +111,7 @@ public class ExperimentPostProcessing {
                             }
                             gen++;
                         } catch (Exception e) {
-                            System.err.println("malformed tuple");
+                            System.err.println("skipping malformed tuple");
                             e.printStackTrace();
                         }
                     }

@@ -34,7 +34,7 @@ public class StandardHoldStrat extends AbstractHoldActionStrat {
             double input = inputs[i];
             MarioKey key = marioKeys[i];
 
-            // if key is already held
+            // if key is already held, can cancel action if action cancellation is on
             if (keysHeld.containsKey(key) && keysHeld.get(key) >= 0) {
                 if (enableCancellation && input < cancelThreshold) {
                     keysHeld.put(key, 0);

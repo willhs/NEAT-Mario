@@ -3,6 +3,7 @@ package will.neat.encog;
 import cz.cuni.amis.pogamut.base.utils.math.A;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.Genome;
+import org.encog.ml.ea.score.parallel.ParallelScore;
 import org.encog.neural.neat.NEATLink;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.neat.training.NEATGenome;
@@ -64,37 +65,72 @@ public class DeleteNodeGreenMutate extends NEATMutation {
                 .filter(l -> l.getFromNeuronID() == targetNeuron.getId())
                 .toArray(NEATLinkGene[]::new);
 
-        // check whether the neuron is disconnected
+        // check whether the neuron is already disconnected
         if (incoming.length == 0 || outgoing.length == 0) {
             removeNeuron(targetGenome, targetNeuron.getId());
             for (int i = 0; i < Math.max(incoming.length, outgoing.length); i++) {
-                removeLink(targetGenome, incoming[i]);
-                removeLink(targetGenome, outgoing[i]);
+                if (incoming.length > i) {
+                    removeLink(targetGenome, incoming[i]);
+                }
+                if (outgoing.length > i){
+                    removeLink(targetGenome, outgoing[i]);
+                }
             }
         }
         // otherwise reconnect links after deleting the neuron
         else {
-            long toRemove;
+            NEATLinkGene toRemove;
             if (incoming.length == 1) {
-                reconnectLinks(incoming[0], outgoing, targetID);
-                toRemove = incoming[0].getInnovationId();
+                reconnectLinks(targetGenome, incoming[0], outgoing, targetID);
+                toRemove = incoming[0];
             } else {
-                reconnectLinks(outgoing[0], incoming, targetID);
-                toRemove = outgoing[0].getInnovationId();
+                reconnectLinks(targetGenome, outgoing[0], incoming, targetID);
+                toRemove = outgoing[0];
             }
 
-            removeNeuron(targetGenome, toRemove);
+            // remove remaining link that is now goes nowhere
+            int size = targetGenome.getLinksChromosome().size();
+            removeLink(targetGenome, toRemove);
+
+            NEATLinkGene[] badLinks = targetGenome.getLinksChromosome().stream()
+                    .filter(l -> l.getToNeuronID() == targetID || l.getFromNeuronID() == targetID )
+                    .toArray(NEATLinkGene[]::new);
+
+            for (NEATLinkGene badLink : badLinks) {
+                removeLink(targetGenome, badLink);
+            }
+
+            System.out.print("");
         }
+
+        NEATLinkGene[] badLinks = targetGenome.getLinksChromosome().stream()
+                .filter(l -> l.getToNeuronID() == targetID || l.getFromNeuronID() == targetID )
+                .toArray(NEATLinkGene[]::new);
     }
 
-    private void reconnectLinks(NEATLinkGene single, NEATLinkGene[] several, long neuronID) {
+    /**
+     * Reconnects links unless they point to and from the same neuron, in which case those are deleted
+     * @param genome
+     * @param single
+     * @param several
+     * @param neuronID
+     */
+    private void reconnectLinks(SingleNEATGenome genome, NEATLinkGene single, NEATLinkGene[] several, long neuronID) {
         if (single.getFromNeuronID() == neuronID) {
             for (NEATLinkGene l : several) {
-                l.setToNeuronID(single.getToNeuronID());
+                if (l.getFromNeuronID() != single.getToNeuronID()) {
+                    removeLink(genome, l);
+                } else {
+                    l.setToNeuronID(single.getToNeuronID());
+                }
             }
         } else {
             for (NEATLinkGene l : several) {
-                l.setFromNeuronID(single.getFromNeuronID());
+                if (l.getToNeuronID() == single.getFromNeuronID()) {
+                    removeLink(genome, l);
+                } else {
+                    l.setFromNeuronID(single.getFromNeuronID());
+                }
             }
         }
     }

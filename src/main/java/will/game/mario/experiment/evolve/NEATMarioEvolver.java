@@ -38,6 +38,7 @@ public class NEATMarioEvolver {
     protected ActionStratFactory stratFactory = () -> new StandardHoldStrat();
     protected String name = "NEAT";
     protected GameEnvironment env = new EnvEnemyGrid();
+    protected int seed = 0;
 
     protected StringBuilder output;
     private boolean printOutput = true;
@@ -84,6 +85,7 @@ public class NEATMarioEvolver {
         this.output = output;
         this.name = name;
         this.ff = ff;
+        this.seed = seed;
     }
 
     public TrainEA run() {
@@ -116,7 +118,7 @@ public class NEATMarioEvolver {
         population.setNEATActivationFunction(params.NN_ACTIVATION_FUNCTION);
         population.reset();
 
-        CalculateScore fitnessFunction = new EncogMarioFitnessFunction(marioOptions, true, agentFactory);
+        CalculateScore fitnessFunction = new EncogMarioFitnessFunction(marioOptions, true, agentFactory, seed);
 
         OriginalNEATSpeciation speciation = new OriginalNEATSpeciation();
         speciation.setCompatibilityThreshold(params.INIT_COMPAT_THRESHOLD);
@@ -135,7 +137,7 @@ public class NEATMarioEvolver {
 
         // either perturb a proportion of all weights or just one weight
         NEATMutateWeights weightMutation = new NEATMutateWeights(
-                params.WEIGHT_MUT_TYPE == HyperNEATParameters.WeightMutType.PROPORTIONAL
+                params.WEIGHT_MUT_TYPE == NEATParameters.WeightMutType.PROPORTIONAL
                         ? new SelectProportion(perturbProp)
                         : new SelectFixed(1),
                 new MutatePerturbOrResetLinkWeight(resetWeightProb, perturbSD)
@@ -184,11 +186,13 @@ public class NEATMarioEvolver {
     }
 
     private void logIteration(TrainEA neat, StringBuilder output) {
-        AbstractNEATPopulation population = (AbstractNEATPopulation) neat.getPopulation();
+        NEATPopulation population = (NEATPopulation) neat.getPopulation();
         double bestFitness = population.getBestGenome().getScore();
 
         int numSpecies = population.getSpecies().size();
 
+        int bestLinks = ((NEATGenome)population.getBestGenome())
+                .getLinksChromosome().size();
         double averageLinks = population.getSpecies().stream()
                 .map(s -> s.getMembers())
                 .flatMap(genomes -> genomes.stream())
@@ -196,12 +200,8 @@ public class NEATMarioEvolver {
                 .average()
                 .getAsDouble();
 
-        double bestLinks = ((NEATGenome)population.getBestGenome())
-                .getLinksChromosome().size();
-
-        double bestNeurons = ((NEATGenome)population.getBestGenome())
+        int bestNeurons = ((NEATGenome)population.getBestGenome())
                 .getNeuronsChromosome().size();
-
         double averageNeurons = population.getSpecies().stream()
                 .map(s -> s.getMembers())
                 .flatMap(genomes -> genomes.stream())
@@ -209,9 +209,11 @@ public class NEATMarioEvolver {
                 .average()
                 .getAsDouble();
 
+        double mpc = population.getMPC();
+
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%s,%d,%.0f,%.0f,%.0f,%.0f,%.0f,%d%n",
-                name, neat.getIteration(), bestFitness, averageLinks, bestLinks, averageNeurons, bestNeurons, numSpecies));
+        sb.append(String.format("%s,%d,%d,%f,%d,%f,%f,%f,%d%n",
+                name, neat.getIteration(), bestFitness, averageLinks, bestLinks, averageNeurons, bestNeurons, mpc, numSpecies));
 
         if (output != null) {
             output.append(sb.toString());

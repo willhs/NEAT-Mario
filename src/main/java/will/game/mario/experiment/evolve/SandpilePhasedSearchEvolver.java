@@ -16,10 +16,7 @@ import will.game.mario.fitness.EncogMarioFitnessFunction;
 import will.game.mario.params.HyperNEATParameters;
 import will.game.mario.params.NEATParameters;
 import will.game.mario.rf.environment.GameEnvironment;
-import will.neat.encog.DeleteLinkSandpileMutate;
-import will.neat.encog.DeleteNeuronSandpileMutate;
-import will.neat.encog.GreenPhasedSearch;
-import will.neat.encog.MutatePerturbOrResetLinkWeight;
+import will.neat.encog.*;
 
 /**
  * Created by Will on 26/01/2017.
@@ -39,7 +36,7 @@ public class SandpilePhasedSearchEvolver extends NEATMarioEvolver {
         population.setNEATActivationFunction(params.NN_ACTIVATION_FUNCTION);
         population.reset();
 
-        CalculateScore fitnessFunction = new EncogMarioFitnessFunction(marioOptions, true, agentFactory);
+        CalculateScore fitnessFunction = new EncogMarioFitnessFunction(marioOptions, true, agentFactory, seed);
 
         OriginalNEATSpeciation speciation = new OriginalNEATSpeciation();
         speciation.setCompatibilityThreshold(params.INIT_COMPAT_THRESHOLD);
@@ -68,8 +65,8 @@ public class SandpilePhasedSearchEvolver extends NEATMarioEvolver {
         neat.addOperation(params.PERTURB_PROB, weightMutation);
 
         // phased search (each phase has unique set of mutations)
-        GreenPhasedSearch phasedSearch = new GreenPhasedSearch(
-                params.PHASE_A_LENGTH, params.PHASE_B_LENGTH, 70);
+        BasicPhasedSearch phasedSearch = new BasicPhasedSearch(
+                params.PHASE_A_LENGTH, params.PHASE_B_LENGTH);
 
         // additive mutations
         phasedSearch.addPhaseOp(0, params.ADD_CONN_PROB, new NEATMutateAddLink());

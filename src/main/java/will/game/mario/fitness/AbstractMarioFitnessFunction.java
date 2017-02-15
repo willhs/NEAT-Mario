@@ -43,7 +43,7 @@ public abstract class AbstractMarioFitnessFunction<N> {
 
     private String simOptions = DEFAULT_SIM_OPTIONS;
 
-    protected final int TRIALS = 1;
+    protected final int TRIALS = 10;
 
     // public static for lazy reasons
     public static boolean headless = false;
@@ -90,7 +90,7 @@ public abstract class AbstractMarioFitnessFunction<N> {
 
         for (int t = 0; t < TRIALS; t++) {
             int seed = random.nextInt();
-            String simOptions = getSimOptions(seed);
+            String simOptions = simOptsWithSeed(seed);
 
             float trialFitness = playMario(agent, simOptions);
 
@@ -137,7 +137,7 @@ public abstract class AbstractMarioFitnessFunction<N> {
         }
     }
 
-    protected String getSimOptions(int seed) {
+    protected String simOptsWithSeed(int seed) {
         return simOptions
                 + " " + MarioOptions.IntOption.LEVEL_RANDOM_SEED.getParam() + " " + seed;
     }

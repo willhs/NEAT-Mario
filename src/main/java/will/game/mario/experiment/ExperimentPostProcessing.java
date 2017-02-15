@@ -17,27 +17,20 @@ import java.util.stream.StreamSupport;
  */
 public class ExperimentPostProcessing {
 
-    private static final int LEVELS = 5;
-
-    private static String ROOT_RESULTS_DIR = "/vol/grid-solar/sgeusers/hardwiwill/results/mario/31st";
-    private static String EXPERIMENT_NAME = "";
-    private static String EXPERIMENT_DIR = EXPERIMENT_NAME + "/train/";
-
-    private static String ROOT_OUTPUT_DIR = ROOT_RESULTS_DIR + "averaged/train/";
-    private static String OUTPUT_FILENAME = EXPERIMENT_NAME + ".csv";
+    private static String ROOT_RESULTS_DIR = "grid_results/transfer/12th/";
 
     public static void main(String[] args) throws Exception {
-/*        Files.newDirectoryStream(Paths.get(ROOT_RESULTS_DIR))
+        Files.newDirectoryStream(Paths.get(ROOT_RESULTS_DIR))
                 .forEach(expPath -> {
                     try {
                         createAverageFiles(expPath);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                });*/
-        Path path = Paths.get("/vol/grid-solar/sgeusers/hardwiwill/results/mario/31st/speed-kills/speed-killsNN");
+                });
+        Path path = Paths.get("grid_results/transfer/12th/speed-enemies-2954298");
 //        createAverageFiles(path);
-        createAverageFile(path, Paths.get(path.toString() + "/averaged/averaged.csv"));
+//        createAverageFile(path, Paths.get(path.toString() + "/averaged/averaged.csv"));
     }
 
     private static void createAverageFiles(Path rootExperimentPath) throws Exception {
@@ -57,7 +50,7 @@ public class ExperimentPostProcessing {
                 .collect(Collectors.toList());
 
         Tuple[] averagedResults = averageResults(experiments.stream());
-        Arrays.stream(averagedResults).forEach(System.out::println);
+//        Arrays.stream(averagedResults).forEach(System.out::println);
 
         // csv the results
         List<String> resultsCSV = new ArrayList<>(Arrays.asList(
@@ -89,14 +82,14 @@ public class ExperimentPostProcessing {
                         e.printStackTrace();
                     }
 
-//                    scan.nextLine(); // skip header (for MarioEvolver files)
+                    scan.nextLine(); // skip header (for MarioEvolver files)
 
                     List<Tuple> tuples = new ArrayList<>();
                     int gen = 0;
                     while (scan.hasNext()) {
                         String[] parts = scan.nextLine().split(",");
                         try {
-                            if (parts.length == 8) {
+                            if (parts.length == 9) {
                                 tuples.add(new Tuple(
                                         gen,
                                         Double.parseDouble(parts[2]),
@@ -104,10 +97,11 @@ public class ExperimentPostProcessing {
                                         Double.parseDouble(parts[4]),
                                         Double.parseDouble(parts[5]),
                                         Double.parseDouble(parts[6]),
-                                        Integer.parseInt(parts[7])
+                                        Double.parseDouble(parts[7]),
+                                        Integer.parseInt(parts[8])
                                 ));
                             } else {
-                                throw new RuntimeException("Tuple has weird number of elements");
+                                System.err.println("Tuple has weird number of elements: " + parts.length + ". Skipping.");
                             }
                             gen++;
                         } catch (Exception e) {
@@ -135,15 +129,17 @@ public class ExperimentPostProcessing {
         public double bestConns;
         public double aveNeurons;
         public double bestNeurons;
+        public double mpc;
         public int species;
 
-        public Tuple(int gen, double fitness, double aveConns, double bestConns, double aveNeurons, double bestNeurons, int species) {
+        public Tuple(int gen, double fitness, double aveConns, double bestConns, double aveNeurons, double bestNeurons, double mpc, int species) {
             this.gen = gen;
             this.fitness = fitness;
             this.aveConns = aveConns;
             this.bestConns = bestConns;
             this.aveNeurons = aveNeurons;
             this.bestNeurons = bestNeurons;
+            this.mpc = mpc;
             this.species = species;
         }
 
@@ -169,6 +165,7 @@ public class ExperimentPostProcessing {
         private List<Double> aveNeuronsTotal = new ArrayList<>(Collections.nCopies(GENS, 0.0));
         private List<Double> bestNeuronsTotal = new ArrayList<>(Collections.nCopies(GENS, 0.0));
         private List<Integer> speciesTotal = new ArrayList<>(Collections.nCopies(GENS, 0));
+        private List<Double> mpc = new ArrayList<>(Collections.nCopies(GENS, 0.0));
 
         public Tuple[] average() {
             return IntStream.range(0, GENS)
@@ -181,6 +178,7 @@ public class ExperimentPostProcessing {
                                 bestConnsTotal.get(i) != 0 ? bestConnsTotal.get(i) / count[i] : 0,
                                 aveNeuronsTotal.get(i) != 0 ? aveNeuronsTotal.get(i) / count[i] : 0,
                                 bestNeuronsTotal.get(i) != 0 ? bestNeuronsTotal.get(i) / count[i] : 0,
+                                mpc.get(i) != 0 ? mpc.get(i) / count[i] : 0,
                                 speciesTotal.get(i) != 0 ? speciesTotal.get(i) / count[i] : 0
                         )
                     ).toArray(s -> new Tuple[s]);
@@ -195,6 +193,7 @@ public class ExperimentPostProcessing {
                 bestConnsTotal.set(i, bestConnsTotal.get(i) + other.bestConnsTotal.get(i));
                 aveNeuronsTotal.set(i, aveConnsTotal.get(i) + other.aveNeuronsTotal.get(i));
                 bestNeuronsTotal.set(i, bestNeuronsTotal.get(i) + other.bestNeuronsTotal.get(i));
+                mpc.set(i, mpc.get(i) + other.mpc.get(i));
                 speciesTotal.set(i, speciesTotal.get(i) + other.speciesTotal.get(i));
             });
         }
@@ -209,6 +208,7 @@ public class ExperimentPostProcessing {
             bestConnsTotal.set(gen, bestConnsTotal.get(gen) + tuple.bestConns);
             aveNeuronsTotal.set(gen, aveNeuronsTotal.get(gen) + tuple.aveNeurons);
             bestNeuronsTotal.set(gen, bestNeuronsTotal.get(gen) + tuple.bestNeurons);
+            mpc.set(gen, mpc.get(gen) + tuple.mpc);
             speciesTotal.set(gen, speciesTotal.get(gen) + tuple.species);
         }
     }

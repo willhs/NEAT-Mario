@@ -46,16 +46,17 @@ public class ManualAgent extends MarioHijackAIBase implements IAgent {
 			String options = DEFAULT_SIM_OPTIONS
 					.replace(FastOpts.VIS_OFF, FastOpts.VIS_ON_2X)
 //					.replace(LEVEL, FastOpts.COINS)
-					.replace(LEVEL, FastOpts.FLAT_GOOMBAS)
+					.replace(LEVEL, FastOpts.LEVEL_06_GOOMBA)
                     .replace(TIME_LIMIT, " " + MarioOptions.IntOption.SIMULATION_TIME_LIMIT.getParam() + " 120")
                     .replace(LEVEL_LENGTH, FastOpts.L_LENGTH_512)
-                    .replace(DIFFICULTY, FastOpts.L_DIFFICULTY(0))
+                    .replace(DIFFICULTY, FastOpts.L_DIFFICULTY(1))
 //					.replace(FastOpts.L_ENEMY(Enemy.GOOMBA), "")
 					+ FastOpts.L_COINS_ON
 //					+ FastOpts.VIS_FIELD(SimulatorOptions.ReceptiveFieldMode.GRID_TILES)
 //					+ FastOpts.S_MARIO_FIRE
+//					+ FastOpts.L_GAPS_ON
                     + FastOpts.S_MARIO_INVULNERABLE
-//					+ FastOpts.L_RANDOM_SEED(0)
+					+ FastOpts.L_RANDOM_SEED(0)
 //                    + FastOpts.L_ENEMY(Enemy.GOOMBA)
 //                    + FastOpts.L_CANNONS_ON
 //                    + " " + MarioOptions.IntOption.LEVEL_MARIO_INITIAL_POSITION_X.getParam() + " " + (512*16-20)

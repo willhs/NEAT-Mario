@@ -12,7 +12,7 @@ import org.encog.util.obj.ObjectHolder;
  */
 public abstract class AbstractPhasedSearch implements Strategy {
 
-    protected TrainEA train;
+    protected TrainEA neat;
 
     public enum Phase { COMPLEXIFICATION, SIMPLIFICATION }
     protected Phase phase = Phase.SIMPLIFICATION;
@@ -30,16 +30,16 @@ public abstract class AbstractPhasedSearch implements Strategy {
 
     public void addPhaseOp(int phase, double prob, EvolutionaryOperator op) {
         phaseOps[phase].add(prob, op);
-        op.init(train);
+        op.init(neat);
     }
 
     @Override
     public void init(MLTrain train) {
-        this.train = (TrainEA) train;
+        this.neat = (TrainEA) train;
 
         for (OperationList list : phaseOps) {
             for (ObjectHolder<EvolutionaryOperator> op : list.getList()) {
-                op.getObj().init(this.train);
+                op.getObj().init(this.neat);
             }
         }
 
@@ -48,10 +48,10 @@ public abstract class AbstractPhasedSearch implements Strategy {
 
     private void addOps() {
         // add ops of the current phase
-        this.train.getOperators().getList().addAll(phaseOps[phase.ordinal()].getList());
+        this.neat.getOperators().getList().addAll(phaseOps[phase.ordinal()].getList());
 
         // finalize (make probabilities add to 1)
-        this.train.getOperators().finalizeStructure();
+        this.neat.getOperators().finalizeStructure();
     }
 
     @Override
@@ -64,7 +64,7 @@ public abstract class AbstractPhasedSearch implements Strategy {
         } else phase = Phase.COMPLEXIFICATION;
 
         // remove operations associated with the last phase
-        train.getOperators().getList().removeIf(objectHolder ->
+        neat.getOperators().getList().removeIf(objectHolder ->
                 phaseOps[last.ordinal()].getList().stream().anyMatch(phaseOp ->
                         phaseOp.getObj().getClass() == objectHolder.getObj().getClass()
                 )
@@ -72,9 +72,9 @@ public abstract class AbstractPhasedSearch implements Strategy {
 
         addOps();
 
-        lastTransitionGeneration = train.getIteration();
+        lastTransitionGeneration = neat.getIteration();
 
-//        System.out.println("Phase changed to : " + phase);
+        System.out.println("Phase changed to : " + phase);
 //        System.out.println("operators: " + train.getOperators().getList());
     }
 

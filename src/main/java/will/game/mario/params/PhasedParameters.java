@@ -7,9 +7,9 @@ import will.neat.encog.AbstractPhasedSearch;
  */
 public class PhasedParameters extends NEATParameters {
 
-    public int MIN_GENS_WITHOUT_IMPROVE = 50;
+    public int MIN_GENS_WITHOUT_IMPROVE = 30;
     public int MIN_SIMPLIFICATION_GENS = 50;
-    public int MPC_JUMP = 80;
+    public int MPC_JUMP = 70;
     public AbstractPhasedSearch.Phase STARTING_PHASE = AbstractPhasedSearch.Phase.COMPLEXIFICATION;
 
     public PhasedParameters() {

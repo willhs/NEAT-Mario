@@ -21,7 +21,7 @@ public class GreenPhasedSearch extends AbstractPhasedSearch {
     // tracking performance improvement
     private double lastBestScore = 0;
     private int gensWithoutImprovement = 0;
-    private double lastMPC;
+    private double lastGenMPC;
 
     public GreenPhasedSearch(int complexityCeilingGap, int maxGensWithoutImprovement, int minSimplificationGens) {
         this.complexityCeilingGap = complexityCeilingGap;
@@ -32,32 +32,32 @@ public class GreenPhasedSearch extends AbstractPhasedSearch {
     @Override
     public void init(MLTrain train) {
         super.init(train);
-        lastMPC = getMPC();
-        complexityCeiling = lastMPC + complexityCeilingGap;
+        lastGenMPC = ((NEATPopulation)neat.getPopulation()).getMPC();
+        complexityCeiling = lastGenMPC + complexityCeilingGap;
     }
 
     @Override
     public void preIteration() {
-        double mpc = getMPC();
+        double mpc = ((NEATPopulation)neat.getPopulation()).getMPC();
 
-        if (phase == Phase.COMPLEXIFICATION) {
-            if (mpc > complexityCeiling
+        if (phase == Phase.COMPLEXIFICATION
+                && mpc > complexityCeiling
                 && gensWithoutImprovement > MAX_GENS_WITHOUT_IMPROVEMENT) {
-                switchPhase();
-            }
-        } else if (mpc < complexityCeiling
-                && train.getIteration() - lastTransitionGeneration > MIN_SIMPLIFICATION_GENS
-                && mpc > lastMPC) {
+            switchPhase();
+        } else if (phase == Phase.SIMPLIFICATION
+                && neat.getIteration() - lastTransitionGeneration > MIN_SIMPLIFICATION_GENS
+                && mpc < complexityCeiling
+                && mpc > lastGenMPC) {
             switchPhase();
             complexityCeiling = mpc + complexityCeilingGap;
         }
 
-        lastMPC = mpc;
+        lastGenMPC = mpc;
     }
 
     @Override
     public void postIteration() {
-        double newScore = train.getBestGenome().getScore();
+        double newScore = neat.getBestGenome().getScore();
 
         if (newScore > lastBestScore) {
             lastBestScore = newScore;
@@ -68,19 +68,4 @@ public class GreenPhasedSearch extends AbstractPhasedSearch {
     }
 
 
-    public double getMPC() {
-        List<Genome> genomes = train.getPopulation().getSpecies().stream()
-                .flatMap(s -> s.getMembers().stream())
-                .collect(Collectors.toList());
-
-        long numLinks = genomes.stream()
-                .flatMap(g -> ((NEATGenome)g).getLinksChromosome().stream())
-                .count();
-
-        long numNodes = genomes.stream()
-                .flatMap(g -> ((NEATGenome)g).getNeuronsChromosome().stream())
-                .count();
-
-        return (numLinks + numNodes) / genomes.size();
-    }
 }

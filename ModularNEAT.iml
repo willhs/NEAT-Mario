@@ -18,12 +18,12 @@
         <jarDirectory url="file://$MODULE_DIR$/MarioAI4J/lib" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="MM-NEAT" />
     <orderEntry type="library" name="JavaRLGlueCodec" level="project" />
     <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="library" name="pogamut" level="project" />
     <orderEntry type="library" name="rl-viz" level="project" />
     <orderEntry type="library" name="vizdoom" level="project" />
-    <orderEntry type="module" module-name="encog-java-core" />
+    <orderEntry type="module" module-name="encog-core" />
+    <orderEntry type="module" module-name="MM-NEAT" />
   </component>
 </module>

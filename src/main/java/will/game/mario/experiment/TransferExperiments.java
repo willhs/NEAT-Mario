@@ -1,7 +1,6 @@
 package will.game.mario.experiment;
 
 import ch.idsia.benchmark.mario.options.FastOpts;
-import ch.idsia.benchmark.mario.options.MarioOptions;
 import org.encog.ml.ea.population.Population;
 import org.encog.ml.ea.train.basic.TrainEA;
 import org.encog.neural.neat.NEATPopulation;
@@ -20,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Random;
 
 import static will.game.mario.experiment.TransferExperiments.Task.A;
 import static will.game.mario.experiment.TransferExperiments.Task.B;
@@ -56,6 +56,7 @@ public class TransferExperiments {
     private String popPath = "saved/pop.xml";
     private String popDir = "saved/pop/";
 
+    private static String LEVEL = "speed-coins";
     private static int TASK_A_GENS = 1000;
     private static int TASK_B_GENS = 500;
     private static int PHASE_LENGTH = 80;
@@ -78,6 +79,7 @@ public class TransferExperiments {
         } else if (args.length > 0) {
             level = args[0];
             outputPath = args[0];
+            LEVEL = args[0];
         }
         if (args.length > 1) {
             outputPath = args[1];
@@ -124,8 +126,8 @@ public class TransferExperiments {
             runSpeedEnemies(sb);
         } else if (level.equals("fly")) {
             runGoomba2Winged(sb);
-        } else if (level.equals("speed-kills")) {
-            runSpeedKills(sb);
+        } else if (level.equals("dist-kills")) {
+            runDistKills(sb);
         } else if (level.equals("speed-coins")) {
             runSpeedCoins(sb);
         }
@@ -222,6 +224,7 @@ public class TransferExperiments {
                 DEFAULT_SIM_OPTIONS
                         .replace(DEFAULT_LEVEL, FastOpts.HILLY_BLANK)
                         .replace(LEVEL_LENGTH, FastOpts.L_LENGTH_512)
+                        .replace(DIFFICULTY, FastOpts.L_DIFFICULTY(0))
 //                .replace(FastOpts.VIS_OFF, FastOpts.VIS_ON_2X)
 //                + FastOpts.L_RANDOM_SEED(0)
 //                + FastOpts.S_MARIO_INVULNERABLE
@@ -280,8 +283,8 @@ public class TransferExperiments {
 //                + FastOpts.S_MARIO_INVULNERABLE
                 ;
 
-        EncogAgent.FitnessFunction baseFF = (info) -> info.distancePassedCells - info.timeSpent;
-        EncogAgent.FitnessFunction transferFF = (info) -> info.distancePassedCells - info.timeSpent;
+        EncogAgent.FitnessFunction baseFF = (info) -> info.distancePassedCells;
+        EncogAgent.FitnessFunction transferFF = (info) -> info.distancePassedCells;
 
         NEATMarioEvolver[] baseEvolvers = getEvolvers(output, baseFF, new EnvEnemyGrid(), baseOpts, A);
         NEATMarioEvolver[] transferEvolvers = getEvolvers(output, transferFF, new EnvEnemyGrid(), transferOpts, B);
@@ -300,7 +303,7 @@ public class TransferExperiments {
 //        runOnPop(pop2, transferEvolvers[2]);
     }
 
-    private void runSpeedKills(StringBuilder output) {
+    private void runDistKills(StringBuilder output) {
 
         String baseOpts =
 //                levels[1]
@@ -324,8 +327,8 @@ public class TransferExperiments {
 //                + FastOpts.S_MARIO_INVULNERABLE
                 ;
 
-        EncogAgent.FitnessFunction baseFF = (info) -> info.distancePassedCells - info.timeSpent;
-        EncogAgent.FitnessFunction transferFF = (info) -> (info.distancePassedCells - info.timeSpent) + (info.killsTotal * 5);
+        EncogAgent.FitnessFunction baseFF = (info) -> info.distancePassedCells;
+        EncogAgent.FitnessFunction transferFF = (info) -> info.distancePassedCells + (info.killsTotal * 5);
 
         NEATMarioEvolver[] baseEvolvers = getEvolvers(output, baseFF, new EnvEnemyGrid(), baseOpts, A);
         NEATMarioEvolver[] transferEvolvers = getEvolvers(output, transferFF, new EnvEnemyGrid(), transferOpts, B);
@@ -369,6 +372,37 @@ public class TransferExperiments {
 
         NEATMarioEvolver[] baseEvolvers = getEvolvers(output, baseFF, new EnvEnemyGrid(), baseOpts, A);
         NEATMarioEvolver[] transferEvolvers = getEvolvers(output, transferFF, new CoinEnemyEnemyGrid(), transferOpts, B);
+
+        runTransferLearningExperiment(baseEvolvers, transferEvolvers);
+    }
+
+    private void runSpeedGaps(StringBuilder output) {
+        String baseOpts =
+//                levels[1]
+                DEFAULT_SIM_OPTIONS
+                        .replace(DEFAULT_LEVEL, FastOpts.FLAT_GOOMBAS)
+                        .replace(LEVEL_LENGTH, FastOpts.L_LENGTH_512)
+                        .replace(DIFFICULTY, FastOpts.L_DIFFICULTY(0))
+//                .replace(FastOpts.VIS_OFF, FastOpts.VIS_ON_2X)
+//                + FastOpts.L_RANDOM_SEED(0)
+//                + FastOpts.S_MARIO_INVULNERABLE
+                ;
+
+        String transferOpts =
+//                levels[1]
+                DEFAULT_SIM_OPTIONS
+                        .replace(DEFAULT_LEVEL, FastOpts.FLAT_GOOMBAS)
+                        .replace(LEVEL_LENGTH, FastOpts.L_LENGTH_512)
+                        .replace(DIFFICULTY, FastOpts.L_DIFFICULTY(1))
+                        .replace(FastOpts.L_GAPS_OFF, FastOpts.L_GAPS_ON)
+//                .replace(FastOpts.VIS_OFF, FastOpts.VIS_ON_2X)
+                ;
+
+        EncogAgent.FitnessFunction baseFF = (info) -> info.distancePassedCells - info.timeSpent;
+        EncogAgent.FitnessFunction transferFF = (info) -> (info.distancePassedCells - info.timeSpent);
+
+        NEATMarioEvolver[] baseEvolvers = getEvolvers(output, baseFF, new EnvEnemyGrid(), baseOpts, A);
+        NEATMarioEvolver[] transferEvolvers = getEvolvers(output, transferFF, new EnvEnemyGrid(), transferOpts, B);
 
         runTransferLearningExperiment(baseEvolvers, transferEvolvers);
 //        runTransferLearningExperiment(baseEvolver, transferEvolvers[0]);
@@ -418,7 +452,7 @@ public class TransferExperiments {
     private NEATMarioEvolver[] getEvolvers(StringBuilder sb, EncogAgent.FitnessFunction ff,
                                            GameEnvironment env, String simOptions, Task task) {
         int gens = task == A ? TASK_A_GENS : TASK_B_GENS;
-        int seed = task == A ? SEED : SEED * 2;
+        int seed = task == A ? SEED : Math.abs(new Random(SEED).nextInt());
 
         NEATParameters neatParams = new NEATParameters();
         neatParams.MAX_GENERATIONS = gens;
@@ -439,19 +473,19 @@ public class TransferExperiments {
 
 
         NEATMarioEvolver neat = new NEATMarioEvolver(neatParams,
-                simOptions, env, sb, "neat", ff, seed);
+                simOptions, env, sb, "neat" + "(" + LEVEL + ")", ff, seed);
 
         NEATMarioEvolver blended = new NEATMarioEvolver(blendedParams,
-                simOptions, env, sb, "blended", ff, seed);
+                simOptions, env, sb, "blended" + "(" + LEVEL + ")", ff, seed);
 
         NEATMarioEvolver phasedStatic = new NEATMarioEvolver(phasedParams,
-                simOptions, env, sb, "phased-static", ff, seed);
+                simOptions, env, sb, "phased-static" + "(" + LEVEL + ")", ff, seed);
 
         NEATMarioEvolver phasedGreen = new GreenPhasedSearchEvolver(phasedParams,
-                simOptions, env, sb, "phased-green", ff, seed);
+                simOptions, env, sb, "phased-green" + "(" + LEVEL + ")", ff, seed);
 
         NEATMarioEvolver phasedSandpile = new SandpilePhasedSearchEvolver(phasedParams,
-                simOptions, env, sb, "phased-green-sandpile", ff, seed);
+                simOptions, env, sb, "phased-static-sandpile" + "(" + LEVEL + ")", ff, seed);
 
         return new NEATMarioEvolver[] {neat, blended, phasedStatic, phasedGreen, phasedSandpile};
     }
@@ -499,7 +533,7 @@ public class TransferExperiments {
         // write string output to file
         try {
             Files.write(output,
-                    "algorithm,generation,fitness,ave-links,best-links,ave-nodes,best-nodes,species\n".getBytes(),
+                    "algorithm,generation,fitness,ave-links,best-links,ave-nodes,best-nodes,mpc,species\n".getBytes(),
                     StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 
             Files.write(output, s.getBytes(),

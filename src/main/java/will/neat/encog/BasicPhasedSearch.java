@@ -1,11 +1,5 @@
 package will.neat.encog;
 
-import org.encog.ml.ea.opp.EvolutionaryOperator;
-import org.encog.ml.ea.opp.OperationList;
-import org.encog.ml.ea.train.basic.TrainEA;
-import org.encog.ml.train.MLTrain;
-import org.encog.ml.train.strategy.Strategy;
-
 /**
  * Created by Will on 20/09/2016.
  * does 2 phases currently
@@ -29,11 +23,11 @@ public class BasicPhasedSearch extends AbstractPhasedSearch {
     @Override
     public void preIteration() {
         // don't switch if it's the first gen
-        if (train.getIteration() == 0) {
+        if (neat.getIteration() == 0) {
             return;
         }
         // switch if the right num of generations has gone by
-        if (train.getIteration() % phaseALength == 0) {
+        if (neat.getIteration() % phaseALength == 0) {
             switchPhase();
         }
 

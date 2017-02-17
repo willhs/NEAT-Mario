@@ -43,7 +43,7 @@ public abstract class AbstractMarioFitnessFunction<N> {
 
     private String simOptions = DEFAULT_SIM_OPTIONS;
 
-    protected final int TRIALS = 10;
+    protected int trials = 10;
 
     // public static for lazy reasons
     public static boolean headless = false;
@@ -69,6 +69,16 @@ public abstract class AbstractMarioFitnessFunction<N> {
         }
     }
 
+    public AbstractMarioFitnessFunction(String simOptions, boolean headless, int seed, int trials) {
+        this.simOptions = simOptions;
+        this.seed = seed;
+        this.trials = trials;
+        this.headless = headless;
+        if (headless) {
+            disableLogging();
+        }
+    }
+
     public AbstractMarioFitnessFunction(boolean headless) {
         this.headless = headless;
         if (headless) {
@@ -88,7 +98,7 @@ public abstract class AbstractMarioFitnessFunction<N> {
 
         Random random = new Random(seed);
 
-        for (int t = 0; t < TRIALS; t++) {
+        for (int t = 0; t < trials; t++) {
             int seed = random.nextInt();
             String simOptions = simOptsWithSeed(seed);
 
@@ -114,7 +124,7 @@ public abstract class AbstractMarioFitnessFunction<N> {
             fitnessSum += trialFitness;
         }
 
-        double averageFitness = fitnessSum / TRIALS;
+        double averageFitness = fitnessSum / trials;
         double fitnessVal = averageFitness;
 
         return fitnessVal;

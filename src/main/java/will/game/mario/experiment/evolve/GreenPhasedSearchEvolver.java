@@ -40,7 +40,8 @@ public class GreenPhasedSearchEvolver extends NEATMarioEvolver {
         population.setNEATActivationFunction(params.NN_ACTIVATION_FUNCTION);
         population.reset();
 
-        CalculateScore fitnessFunction = new EncogMarioFitnessFunction(marioOptions, true, agentFactory, seed);
+        CalculateScore fitnessFunction = new EncogMarioFitnessFunction(marioOptions, true, agentFactory,
+                seed, params.TASK_INSTANCES);
 
         OriginalNEATSpeciation speciation = new OriginalNEATSpeciation();
         speciation.setCompatibilityThreshold(params.INIT_COMPAT_THRESHOLD);

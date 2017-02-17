@@ -96,16 +96,19 @@ public class DeleteNodeGreenMutate extends NEATMutation {
                     .filter(l -> l.getToNeuronID() == targetID || l.getFromNeuronID() == targetID )
                     .toArray(NEATLinkGene[]::new);
 
-            for (NEATLinkGene badLink : badLinks) {
-                removeLink(targetGenome, badLink);
-            }
-
             System.out.print("");
         }
 
         NEATLinkGene[] badLinks = targetGenome.getLinksChromosome().stream()
                 .filter(l -> l.getToNeuronID() == targetID || l.getFromNeuronID() == targetID )
                 .toArray(NEATLinkGene[]::new);
+
+
+
+
+        for (NEATLinkGene badLink : badLinks) {
+            removeLink(targetGenome, badLink);
+        }
     }
 
     /**

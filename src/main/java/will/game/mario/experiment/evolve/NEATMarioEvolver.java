@@ -20,6 +20,7 @@ import will.game.mario.params.PhasedParameters;
 import will.game.mario.rf.action.StandardHoldStrat;
 import will.game.mario.rf.environment.EnvEnemyGrid;
 import will.game.mario.rf.environment.GameEnvironment;
+import will.neat.encog.DeleteNodeGreenMutate;
 import will.neat.encog.MutatePerturbOrResetLinkWeight;
 import will.neat.encog.BasicPhasedSearch;
 import will.neat.encog.substrate.MultiHiddenLayerSubstrate;
@@ -118,7 +119,8 @@ public class NEATMarioEvolver {
         population.setNEATActivationFunction(params.NN_ACTIVATION_FUNCTION);
         population.reset();
 
-        CalculateScore fitnessFunction = new EncogMarioFitnessFunction(marioOptions, true, agentFactory, seed);
+        CalculateScore fitnessFunction = new EncogMarioFitnessFunction(marioOptions, true, agentFactory,
+                seed, params.TASK_INSTANCES);
 
         OriginalNEATSpeciation speciation = new OriginalNEATSpeciation();
         speciation.setCompatibilityThreshold(params.INIT_COMPAT_THRESHOLD);
@@ -160,7 +162,7 @@ public class NEATMarioEvolver {
             phasedSearch.addPhaseOp(0, params.ADD_NEURON_PROB, new NEATMutateAddNeuron());
 
             // subtractive mutations
-            phasedSearch.addPhaseOp(1, params.REMOVE_CONN_PROB, new NEATMutateRemoveLink());
+            phasedSearch.addPhaseOp(1, params.REMOVE_CONN_PROB, new DeleteNodeGreenMutate());
             phasedSearch.addPhaseOp(1, params.REMOVE_NEURON_PROB, new NEATMutateRemoveNeuron());
 
             neat.addStrategy(phasedSearch);
@@ -169,7 +171,7 @@ public class NEATMarioEvolver {
             neat.addOperation(params.ADD_CONN_PROB, new NEATMutateAddLink());
             neat.addOperation(params.ADD_NEURON_PROB, new NEATMutateAddNeuron());
             neat.addOperation(params.REMOVE_CONN_PROB, new NEATMutateRemoveLink());
-            neat.addOperation(params.REMOVE_NEURON_PROB, new NEATMutateRemoveNeuron());
+//            neat.addOperation(params.REMOVE_NEURON_PROB, new NEATMutateRemoveNeuron());
         }
         neat.getOperators().finalizeStructure();
 
@@ -196,7 +198,7 @@ public class NEATMarioEvolver {
         double averageLinks = population.getSpecies().stream()
                 .map(s -> s.getMembers())
                 .flatMap(genomes -> genomes.stream())
-                .mapToInt(genome -> ((NEATGenome)genome).getLinksChromosome().size())
+                .mapToDouble(genome -> ((NEATGenome)genome).getLinksChromosome().size())
                 .average()
                 .getAsDouble();
 
@@ -205,21 +207,22 @@ public class NEATMarioEvolver {
         double averageNeurons = population.getSpecies().stream()
                 .map(s -> s.getMembers())
                 .flatMap(genomes -> genomes.stream())
-                .mapToInt(genome -> ((NEATGenome)genome).getNeuronsChromosome().size())
+                .mapToDouble(genome -> ((NEATGenome)genome).getNeuronsChromosome().size())
                 .average()
                 .getAsDouble();
 
         double mpc = population.getMPC();
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%s,%d,%d,%f,%d,%f,%f,%f,%d%n",
-                name, neat.getIteration(), bestFitness, averageLinks, bestLinks, averageNeurons, bestNeurons, mpc, numSpecies));
+        String row = String.format("%s,%d,%f,%f,%d,%f,%d,%f,%d%n",
+                name, neat.getIteration(), bestFitness, averageLinks, bestLinks, averageNeurons, bestNeurons, mpc, numSpecies);
 
         if (output != null) {
-            output.append(sb.toString());
+            output.append(row);
         }
         if (printOutput) {
-            System.out.print(sb.toString());
+            String printRow = String.format("%s,%d,%.0f,%.0f,%d,%.0f,%d,%.0f,%d%n",
+                    name, neat.getIteration(), bestFitness, averageLinks, bestLinks, averageNeurons, bestNeurons, mpc, numSpecies);
+            System.out.print(printRow);
         }
     }
 

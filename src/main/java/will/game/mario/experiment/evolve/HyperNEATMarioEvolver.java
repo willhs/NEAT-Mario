@@ -48,7 +48,8 @@ public class HyperNEATMarioEvolver extends NEATMarioEvolver {
 
         population.reset();
 
-        CalculateScore fitnessFunction = new EncogMarioFitnessFunction(marioOptions, true, factory);
+        CalculateScore fitnessFunction = new EncogMarioFitnessFunction(marioOptions, true, factory,
+                seed, params.TASK_INSTANCES);
 
         OriginalNEATSpeciation speciation = new OriginalNEATSpeciation();
         speciation.setCompatibilityThreshold(hyperParams.INIT_COMPAT_THRESHOLD);

@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/ModularNEAT_jar</output-path>
     <root id="root">
       <element id="archive" name="ModularNEAT.jar">
-        <element id="module-output" name="ModularNEAT" />
+        <element id="module-output" name="Mario-NEAT" />
         <element id="module-output" name="encog-core" />
         <element id="module-output" name="MarioAI4J" />
         <element id="module-output" name="MM-NEATv2" />

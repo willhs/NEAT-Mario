@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="NEAT-Mario:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/NEAT_Mario_jar</output-path>
+    <root id="archive" name="NEAT-Mario.jar">
+      <element id="module-output" name="NEAT-Mario" />
+      <element id="module-output" name="encog-core" />
+      <element id="module-output" name="MarioAI4J" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/MarioAI4J/lib/asm-all-3.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/commons/commons-math3/3.0/commons-math3-3.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

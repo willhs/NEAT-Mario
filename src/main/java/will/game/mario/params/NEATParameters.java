@@ -8,7 +8,8 @@ import org.encog.engine.network.activation.ActivationFunction;
  */
 public class NEATParameters {
 
-    //
+    public int TASK_INSTANCES = 10; // how many different mario levels instances of
+
     public int POP_SIZE = 100;
     public int MAX_GENERATIONS = 1000;
 
@@ -29,7 +30,7 @@ public class NEATParameters {
     public int MIN_PER_SPECIE = 10;
     public int MAX_SPECIES = POP_SIZE / MIN_PER_SPECIE;
     public int SPECIES_DROPOFF = 50;
-    public double INIT_COMPAT_THRESHOLD = 8;
+    public double INIT_COMPAT_THRESHOLD = 20;
 
     // mutation probs
     public enum WeightMutType { PROPORTIONAL, ONCE }

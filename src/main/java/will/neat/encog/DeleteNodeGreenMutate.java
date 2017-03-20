@@ -1,6 +1,5 @@
 package will.neat.encog;
 
-import cz.cuni.amis.pogamut.base.utils.math.A;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.ea.genome.Genome;
 import org.encog.ml.ea.score.parallel.ParallelScore;
@@ -96,16 +95,19 @@ public class DeleteNodeGreenMutate extends NEATMutation {
                     .filter(l -> l.getToNeuronID() == targetID || l.getFromNeuronID() == targetID )
                     .toArray(NEATLinkGene[]::new);
 
-            for (NEATLinkGene badLink : badLinks) {
-                removeLink(targetGenome, badLink);
-            }
-
             System.out.print("");
         }
 
         NEATLinkGene[] badLinks = targetGenome.getLinksChromosome().stream()
                 .filter(l -> l.getToNeuronID() == targetID || l.getFromNeuronID() == targetID )
                 .toArray(NEATLinkGene[]::new);
+
+
+
+
+        for (NEATLinkGene badLink : badLinks) {
+            removeLink(targetGenome, badLink);
+        }
     }
 
     /**
